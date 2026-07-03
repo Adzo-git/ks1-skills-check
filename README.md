@@ -205,6 +205,25 @@ assessment length changed to support this — illustrations are purely a `q.illu
 field read by `renderIllustration()` in `app.js` and never touch the saved
 `responses` data.
 
+## Helpful Reminders (Version 1.1)
+
+Every question now shows a small "💡 Helpful Reminder" box below the answer
+choices — encouragement and good habits ("take your time," "read carefully"),
+never a hint. One is picked at random per question from a bank of 8 general
+reminders plus 2–3 per curriculum strand (`GENERAL_REMINDERS` /
+`STRAND_REMINDERS` near the top of `app.js`), avoiding an immediate repeat
+where the pool allows it.
+
+Every reminder in the bank was checked to contain no numbers and no reference
+to any specific question, shape, or fact — they're the same regardless of
+which question is on screen, so they can't narrow down an answer. This was
+verified by simulating a full 37-question sitting and checking the reminder
+shown against that question's correct answer every time (zero matches).
+
+This is purely a display addition: it reads `q.strand` and writes to a new
+`<div id="reminder-text">`, and touches nothing in the assessment engine,
+scoring, question selection, reporting, or Supabase.
+
 ---
 
 Primary Tutor Online · KS1 Maths Skills Check · v1.1
