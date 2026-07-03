@@ -5,7 +5,8 @@
    Saves one row per completed check to Supabase (insert only).
 
    Flow:  Welcome (parent sets up) → Instructions → Questions
-          → Well done → Report (for the grown-up)
+          → Confidence check (child) → Well done → Independence check (parent)
+          → Report (for the grown-up)
    ============================================================ */
 
 /* ---------- State ---------- */
@@ -16,6 +17,10 @@ const state = {
   order: [],        // questions with per-session shuffled options
   index: 0,
   answers: [],      // { question, chosenIndex }
+  confidence: null,     // child's self-rating: easy / ok / quite_difficult / very_difficult
+  independence: null,   // parent's rating: independent / a_little_help / a_lot_of_help
+  questionsCompletedAt: null, // timestamp when the LAST MATHS QUESTION was answered
+                              // (captured separately so duration excludes the two short survey screens)
   saving: false,    // true while a save is in flight
   saved: false      // true once a result has been stored (prevents duplicates)
 };
@@ -51,9 +56,13 @@ const TICK = '<svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" str
 function renderIllustration(ill) {
   if (!ill) return "";
   if (ill.type === "dots") return svgDots(ill.count, ill.color || "#652da0");
+  if (ill.type === "array") return svgArray(ill.rows, ill.cols, ill.color || "#652da0");
   if (ill.type === "coins") return svgCoins(ill.values);
-  if (ill.type === "shape" && ill.shape === "triangle") return svgTriangle();
-  if (ill.type === "clock") return svgClock(ill.hour);
+  if (ill.type === "shape") return svgShape(ill.shape);
+  if (ill.type === "clock") return svgClock(ill.hour, ill.minute || 0);
+  if (ill.type === "fraction") return svgFraction(ill.parts, ill.shaded, ill.tall);
+  if (ill.type === "bars") return svgBars(ill.bars);
+  if (ill.type === "pictogram") return svgPictogram(ill.rows);
   return "";
 }
 
@@ -74,6 +83,22 @@ function svgDots(n, color) {
   return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${n} objects">${circles}</svg>`;
 }
 
+// Array: rows x cols grid of dots (for equal groups / multiplication).
+function svgArray(rows, cols, color) {
+  const r = 16, gap = 18, pad = 16;
+  const w = pad * 2 + cols * (r * 2) + (cols - 1) * gap;
+  const h = pad * 2 + rows * (r * 2) + (rows - 1) * gap;
+  let out = "";
+  for (let ry = 0; ry < rows; ry++) {
+    for (let cx = 0; cx < cols; cx++) {
+      const x = pad + r + cx * (r * 2 + gap);
+      const y = pad + r + ry * (r * 2 + gap);
+      out += `<circle cx="${x}" cy="${y}" r="${r}" fill="${color}"/>`;
+    }
+  }
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="A grid of dots">${out}</svg>`;
+}
+
 function svgCoins(values) {
   const r = 40, gap = 22, pad = 12;
   const w = pad * 2 + values.length * (r * 2) + (values.length - 1) * gap;
@@ -90,19 +115,39 @@ function svgCoins(values) {
   return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Coins: ${values.map(v => v + " p").join(", ")}">${out}</svg>`;
 }
 
-function svgTriangle() {
-  return `<svg viewBox="0 0 200 190" role="img" aria-label="A triangle">
-    <polygon points="100,25 175,165 25,165" fill="#f3edfb" stroke="#652da0" stroke-width="6" stroke-linejoin="round"/>
-  </svg>`;
+// 2D shapes. Circle and rectangle/square are drawn directly; triangle,
+// pentagon and hexagon are regular polygons drawn around a centre point.
+function svgShape(shape) {
+  const fill = "#f3edfb", stroke = "#652da0", sw = 6;
+  const open = `<svg viewBox="0 0 200 200" role="img" aria-label="A shape">`;
+  const close = `</svg>`;
+  if (shape === "circle")
+    return `${open}<circle cx="100" cy="100" r="80" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>${close}`;
+  if (shape === "square")
+    return `${open}<rect x="35" y="35" width="130" height="130" rx="4" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round"/>${close}`;
+  if (shape === "rectangle")
+    return `${open}<rect x="20" y="55" width="160" height="90" rx="4" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round"/>${close}`;
+  const sides = { triangle: 3, pentagon: 5, hexagon: 6 }[shape] || 3;
+  const R = 82, cx = 100, cy = 105;
+  let pts = [];
+  for (let i = 0; i < sides; i++) {
+    const a = (-90 + i * 360 / sides) * Math.PI / 180;
+    pts.push(`${(cx + R * Math.cos(a)).toFixed(1)},${(cy + R * Math.sin(a)).toFixed(1)}`);
+  }
+  return `${open}<polygon points="${pts.join(" ")}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round"/>${close}`;
 }
 
-function svgClock(hour) {
-  // hour hand angle (12 at top). For a whole hour, minute hand points up.
+function svgClock(hour, minute) {
+  minute = minute || 0;
   const cx = 110, cy = 110, R = 96;
-  const hourAngle = (hour % 12) * 30;               // degrees clockwise from 12
+  // Hour hand moves on past the hour as the minutes pass (half past = halfway).
+  const hourAngle = (hour % 12) * 30 + (minute / 60) * 30;
+  const minuteAngle = (minute / 60) * 360;          // 0 = up, 30 mins = down
   const rad = (deg) => (deg - 90) * Math.PI / 180;  // 0deg = up
   const hx = cx + Math.cos(rad(hourAngle)) * 52;
   const hy = cy + Math.sin(rad(hourAngle)) * 52;
+  const mx = cx + Math.cos(rad(minuteAngle)) * 78;
+  const my = cy + Math.sin(rad(minuteAngle)) * 78;
   let ticks = "";
   for (let i = 0; i < 12; i++) {
     const a = rad(i * 30);
@@ -116,9 +161,61 @@ function svgClock(hour) {
     <circle cx="${cx}" cy="${cy}" r="${R}" fill="#fff" stroke="#652da0" stroke-width="6"/>
     ${ticks}${nums}
     <line x1="${cx}" y1="${cy}" x2="${hx}" y2="${hy}" stroke="#241d38" stroke-width="7" stroke-linecap="round"/>
-    <line x1="${cx}" y1="${cy}" x2="${cx}" y2="${cy - 78}" stroke="#241d38" stroke-width="5" stroke-linecap="round"/>
+    <line x1="${cx}" y1="${cy}" x2="${mx}" y2="${my}" stroke="#241d38" stroke-width="5" stroke-linecap="round"/>
     <circle cx="${cx}" cy="${cy}" r="7" fill="#652da0"/>
   </svg>`;
+}
+
+// Fraction: a shape split into equal parts, with some parts shaded.
+function svgFraction(parts, shaded, tall) {
+  const fill = "#652da0", empty = "#fff", stroke = "#652da0", sw = 5;
+  let cells = "", W, H;
+  if (tall) {
+    W = 120; H = 210; const ph = H / parts;
+    for (let i = 0; i < parts; i++) {
+      cells += `<rect x="0" y="${(i * ph).toFixed(1)}" width="${W}" height="${ph.toFixed(1)}" fill="${i < shaded ? fill : empty}" stroke="${stroke}" stroke-width="${sw}"/>`;
+    }
+  } else {
+    W = 250; H = 110; const pw = W / parts;
+    for (let i = 0; i < parts; i++) {
+      cells += `<rect x="${(i * pw).toFixed(1)}" y="0" width="${pw.toFixed(1)}" height="${H}" fill="${i < shaded ? fill : empty}" stroke="${stroke}" stroke-width="${sw}"/>`;
+    }
+  }
+  return `<svg viewBox="-3 -3 ${W + 6} ${H + 6}" role="img" aria-label="A shape split into equal parts">${cells}</svg>`;
+}
+
+// Bars: horizontal bars of different lengths, labelled A/B/C (for length comparison).
+function svgBars(bars) {
+  const pad = 12, labelW = 34, barH = 32, gap = 18, maxW = 210;
+  const maxLen = Math.max(...bars.map(b => b.length));
+  const w = pad * 2 + labelW + maxW;
+  const h = pad * 2 + bars.length * barH + (bars.length - 1) * gap;
+  let out = "";
+  bars.forEach((b, i) => {
+    const y = pad + i * (barH + gap);
+    const bw = Math.max(8, (b.length / maxLen) * maxW);
+    out += `<text x="${pad}" y="${y + barH / 2 + 6}" font-size="20" font-weight="700" font-family="Poppins, Arial" fill="#4e2280">${escapeHtml(b.label)}</text>`;
+    out += `<rect x="${pad + labelW}" y="${y}" width="${bw.toFixed(1)}" height="${barH}" rx="5" fill="#652da0"/>`;
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Bars of different lengths">${out}</svg>`;
+}
+
+// Pictogram: rows of pictures, one row per category, with a label.
+function svgPictogram(rows) {
+  const pad = 12, labelW = 90, r = 13, gap = 8, rowH = 34;
+  const maxCount = Math.max(...rows.map(x => x.count));
+  const w = pad * 2 + labelW + maxCount * (r * 2 + gap);
+  const h = pad * 2 + rows.length * rowH;
+  let out = "";
+  rows.forEach((row, i) => {
+    const cy = pad + i * rowH + rowH / 2;
+    out += `<text x="${pad}" y="${cy + 5}" font-size="16" font-weight="600" font-family="Poppins, Arial" fill="#4e2280">${escapeHtml(row.label)}</text>`;
+    for (let k = 0; k < row.count; k++) {
+      const cx = pad + labelW + r + k * (r * 2 + gap);
+      out += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#652da0"/>`;
+    }
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="A pictogram">${out}</svg>`;
 }
 
 /* ---------- Setup (Welcome) ---------- */
@@ -154,13 +251,67 @@ function initSetup() {
   });
 }
 
+/* ---------- Assessment selection (Version 1.1) ----------
+   Each check presents 30 questions, chosen at random from the full
+   question bank with balanced curriculum coverage. Within a strand we
+   pick different skills first (so a child does not get two questions on
+   the exact same skill unless the quota requires it), and a random
+   variant of each — so repeat sittings feel fresh. Quotas sum to 30. */
+const ASSESSMENT_LENGTH = 37;
+const STRAND_QUOTA = { NPV: 8, AS: 6, MEA: 5, MD: 4, FRA: 4, GEO: 4, POS: 3, STA: 3 };
+const DIFFICULTY_RANK = { "Foundation": 0, "Secure": 1, "Greater Depth": 2, "Mastery": 3 };
+function rankOf(q) { const r = DIFFICULTY_RANK[q.difficulty]; return r === undefined ? 1 : r; }
+
+// Pick `k` questions from one strand, preferring different skills.
+function pickFromStrand(strand, k) {
+  const pool = PTO_QUESTIONS.filter(q => q.strand === strand);
+  const bySkill = {};
+  pool.forEach(q => { (bySkill[q.skillId] = bySkill[q.skillId] || []).push(q); });
+  const skills = shuffled(Object.keys(bySkill));
+  const picks = [];
+  // One random variant per distinct skill, up to the quota.
+  for (const s of skills) {
+    if (picks.length >= k) break;
+    const variants = bySkill[s];
+    picks.push(variants[Math.floor(Math.random() * variants.length)]);
+  }
+  // If the quota exceeds the number of skills, top up (skills may repeat).
+  if (picks.length < k) {
+    const extra = shuffled(pool.filter(q => !picks.includes(q)));
+    while (picks.length < k && extra.length) picks.push(extra.pop());
+  }
+  return picks;
+}
+
+// Build a balanced assessment of exactly ASSESSMENT_LENGTH questions.
+function selectAssessment() {
+  let chosen = [];
+  Object.keys(STRAND_QUOTA).forEach(strand => {
+    chosen = chosen.concat(pickFromStrand(strand, STRAND_QUOTA[strand]));
+  });
+  // Safety net: if any strand fell short, top up from the rest of the bank
+  // so we always present exactly ASSESSMENT_LENGTH questions.
+  if (chosen.length < ASSESSMENT_LENGTH) {
+    const rest = shuffled(PTO_QUESTIONS.filter(q => !chosen.includes(q)));
+    while (chosen.length < ASSESSMENT_LENGTH && rest.length) chosen.push(rest.pop());
+  }
+  chosen = chosen.slice(0, ASSESSMENT_LENGTH);
+  // Gentle confidence-first order: easier questions first, with a little
+  // randomness within each difficulty band (PTO Part 20).
+  chosen.sort((a, b) => {
+    const d = rankOf(a) - rankOf(b);
+    return d !== 0 ? d : Math.random() - 0.5;
+  });
+  return chosen;
+}
+
 /* ---------- Start the check ---------- */
 function startCheck() {
   state.startedAt = new Date().toISOString();
   state.index = 0;
   state.answers = [];
-  // Build this session's question order, with each question's options shuffled.
-  state.order = PTO_QUESTIONS.map(q => {
+  // Select this session's 30 questions, then shuffle each one's options.
+  state.order = selectAssessment().map(q => {
     const correctValue = q.options[q.correctIndex];
     const opts = shuffled(q.options);
     return { ...q, sessionOptions: opts, sessionCorrectIndex: opts.indexOf(correctValue) };
@@ -222,19 +373,48 @@ function nextQuestion() {
     state.index++;
     renderQuestion();
   } else {
-    finish();
+    showConfidence();
   }
 }
 
-/* ---------- Finish → celebrate → report ---------- */
+/* ---------- Confidence check (child, straight after the last question) ---------- */
+function showConfidence() {
+  state.questionsCompletedAt = new Date().toISOString();
+  state.confidence = null;
+  document.querySelectorAll("#confidence-options .confidence-btn").forEach(el => el.classList.remove("selected"));
+  $("confidence-next-btn").disabled = true;
+  show("screen-confidence");
+}
+
+function selectConfidence(btn) {
+  state.confidence = btn.dataset.value;
+  document.querySelectorAll("#confidence-options .confidence-btn").forEach(el => el.classList.toggle("selected", el === btn));
+  $("confidence-next-btn").disabled = false;
+}
+
+/* ---------- Finish → celebrate → independence check → report ---------- */
 function finish() {
   $("child-name-done").textContent = state.child.name;
   show("screen-complete");
 }
 
+/* ---------- Independence check (parent, after the handover) ---------- */
+function showIndependence() {
+  state.independence = null;
+  document.querySelectorAll("#independence-options .answer").forEach(el => el.classList.remove("selected"));
+  $("to-report-btn").disabled = true;
+  show("screen-independence");
+}
+
+function selectIndependence(btn) {
+  state.independence = btn.dataset.value;
+  document.querySelectorAll("#independence-options .answer").forEach(el => el.classList.toggle("selected", el === btn));
+  $("to-report-btn").disabled = false;
+}
+
 function buildAndShowReport() {
   // Prevent repeated clicks from building/submitting more than once.
-  const btn = $("show-report-btn");
+  const btn = $("to-report-btn");
   if (btn) btn.disabled = true;
   if (state.saved || state.saving) return;
 
@@ -257,6 +437,8 @@ function computeReport() {
       strand: q.strand,
       subtopic: q.subtopic,
       difficulty: q.difficulty,
+      curriculum_year: q.curriculumYear,
+      misconception_category: q.misconceptionCategory,
       question: q.text,
       chosen: chosenLabel,
       correct: correctLabel,
@@ -300,11 +482,20 @@ function computeReport() {
     ? Math.round((totalCorrect / responses.length) * 100)
     : 0;
 
+  // Total time actually spent on the maths (first question shown to last
+  // question answered) — excludes the confidence and independence screens.
+  const durationSeconds = Math.max(0, Math.round(
+    (new Date(state.questionsCompletedAt) - new Date(state.startedAt)) / 1000
+  ));
+
   return {
     child: state.child.name,
     age: state.child.age,
     startedAt: state.startedAt,
     completedAt,
+    durationSeconds,
+    confidence: state.confidence,
+    independence: state.independence,
     totalQuestions: responses.length,
     totalCorrect,
     percentage,
@@ -347,15 +538,24 @@ function renderReport(r) {
       </div>`;
   }
 
-  // Areas for development
+  // Areas for development — wording softened so it never reads as a firm
+  // verdict, and is explicit when a strand was sampled by very few questions.
   const areasWrap = $("report-areas");
   if (r.areas.length) {
-    areasWrap.innerHTML = r.areas.map(s => `
+    areasWrap.innerHTML = r.areas.map(s => {
+      const encouragement = s.level === "developing"
+        ? "This appears to be an area worth exploring further together."
+        : "Additional practice in this area is likely to help build confidence.";
+      const lowEvidence = s.total <= 3
+        ? " This is based on a small number of questions, so treat it as an early signal to explore rather than a firm conclusion."
+        : "";
+      return `
       <div class="rcard grow">
         <h3>${escapeHtml(s.name)}</h3>
-        <p>${escapeHtml(s.covers)} A little more practice here will help build confidence.</p>
+        <p>${escapeHtml(s.covers)} ${encouragement}${lowEvidence}</p>
         <div class="home"><strong>Try at home:</strong> ${escapeHtml(s.homeTip)}</div>
-      </div>`).join("");
+      </div>`;
+    }).join("");
     $("areas-section").style.display = "";
   } else {
     // All secure — offer gentle extension rather than inventing weaknesses.
@@ -417,6 +617,9 @@ async function saveResults(r) {
     total_questions: r.totalQuestions,
     total_correct: r.totalCorrect,
     percentage: r.percentage,
+    duration_seconds: r.durationSeconds,
+    child_confidence: r.confidence,
+    parent_independence: r.independence,
     reference: reference,
     strand_summary: r.strandResults.map(s => ({
       strand: s.key, name: s.name, correct: s.correct, total: s.total, level: s.level
@@ -445,6 +648,18 @@ document.addEventListener("DOMContentLoaded", () => {
   initSetup();
   $("to-questions-btn").addEventListener("click", startCheck);
   $("next-btn").addEventListener("click", nextQuestion);
-  $("show-report-btn").addEventListener("click", buildAndShowReport);
+
+  document.querySelectorAll("#confidence-options .confidence-btn").forEach(btn => {
+    btn.addEventListener("click", () => selectConfidence(btn));
+  });
+  $("confidence-next-btn").addEventListener("click", finish);
+
+  $("show-report-btn").addEventListener("click", showIndependence);
+
+  document.querySelectorAll("#independence-options .answer").forEach(btn => {
+    btn.addEventListener("click", () => selectIndependence(btn));
+  });
+  $("to-report-btn").addEventListener("click", buildAndShowReport);
+
   $("print-btn").addEventListener("click", () => window.print());
 });

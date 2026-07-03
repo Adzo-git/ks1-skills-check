@@ -15,8 +15,8 @@
 
 const PTO_CONFIG = {
   // --- Supabase connection (paste your own values) ---
-  SUPABASE_URL:      "https://xjqzuxucrttmbxcsjzox.supabase.co",       // e.g. https://abcdefgh.supabase.co
-  SUPABASE_ANON_KEY: "sb_publishable_rjef4fZwZMkNlbTHQ1I64A_KxdzWehF",  // the long "anon public" key
+  SUPABASE_URL:      "YOUR_SUPABASE_URL",       // e.g. https://abcdefgh.supabase.co
+  SUPABASE_ANON_KEY: "YOUR_SUPABASE_ANON_KEY",  // the long "anon public" key
 
   // --- Behaviour ---
   // Set to false to try the whole assessment WITHOUT saving anywhere.
@@ -29,10 +29,10 @@ const PTO_CONFIG = {
 
   // Version of the QUESTION SET. Bump this whenever you change questions.js,
   // so you always know which questions a child actually answered.
-  ASSESSMENT_VERSION: "v1.0",
+  ASSESSMENT_VERSION: "v1.0-rc2",
 
   // Version of the SOFTWARE (this app). Separate from the question-set version.
-  APP_VERSION: "v1.0"
+  APP_VERSION: "v1.0-rc2"
 };
 
 // Returns true only when real Supabase details have been entered.

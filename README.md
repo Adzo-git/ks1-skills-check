@@ -1,8 +1,12 @@
-# KS1 Maths Skills Check (Version 1.0)
+# KS1 Maths Skills Check (Version 1.0 Release Candidate 2)
 
 A short, friendly Key Stage 1 maths check for **Primary Tutor Online**. A parent
-sets it up, the child answers ~15 questions one screen at a time, and the parent
+sets it up, the child answers **37 questions** one screen at a time, and the parent
 gets a simple **strengths and next-steps report**. Results are saved to Supabase.
+
+The 37 questions are chosen at random from a bank of **360 curriculum-mapped
+questions** with balanced coverage of every KS1 maths strand, so repeat sittings
+feel fresh while staying fair and representative.
 
 Built to the PTO Standards: curriculum-led, child-first, calm, and honest.
 Plain HTML/CSS/JavaScript — no build step, no framework, minimal maintenance.
@@ -15,10 +19,11 @@ Plain HTML/CSS/JavaScript — no build step, no framework, minimal maintenance.
 |------|------------|
 | `index.html` | The whole app (all screens) |
 | `styles.css` | PTO design system (purple/white/pink, Poppins, calm, accessible) |
-| `questions.js` | The 15 questions + strand definitions — **edit this to change questions** |
-| `app.js` | Flow, question rendering, report generation, saving |
+| `questions.js` | The 360-question bank + strand definitions — **edit this to change questions** |
+| `app.js` | Flow, question selection, rendering, report generation, saving |
 | `config.js` | **The one file you edit to go live** (Supabase details) |
 | `supabase-setup.sql` | Run once in Supabase to create the results table |
+| `tools/generate-questions.js` | *Optional.* The offline authoring script used to build `questions.js` in bulk. **Not part of the website** — only needed (with Node) if you want to regenerate the bank. |
 | `README.md` | This file |
 
 ---
@@ -85,10 +90,38 @@ every question — enough to spot any weak questions before you expand the bank.
 These follow "choose the simplest solution that satisfies the educational
 requirements":
 
-- **15 questions.** Enough to sample the KS1 curriculum with the Part 23 weighting
-  (Number & Place Value 33%, Addition & Subtraction 27%, Multiplication & Division
-  13%, Measurement 13%, Fractions 7%, Geometry 7%) while staying short enough to
-  avoid fatigue for a 5–7 year old.
+- **37 questions from a 360-question bank.** Originally 30, increased after the first
+  educational review found that Position & Direction and Statistics (1 question each)
+  gave too little evidence to fairly classify a whole strand. Quotas are now Number &
+  Place Value 8, Addition & Subtraction 6, Measurement 5, Multiplication & Division 4,
+  Fractions 4, Geometry 4, Position & Direction 3, Statistics 3 — totalling 37, still a
+  few minutes longer at most. Every strand now has at least 3 questions. Within each
+  strand the app picks *different skills* and a random variant of each, so no child
+  gets two questions on the exact same skill (bank checked: every strand has more
+  distinct skills than its quota) and repeat sittings differ.
+- **Gentle difficulty ramp.** After selection, questions are ordered easier-first
+  with a little randomness inside each difficulty band, so children start with a
+  confidence-builder (Part 20).
+- **Metadata: curriculum year, misconception category, estimated time.** Each
+  question also carries `curriculumYear` (Year 1 or Year 2, taken from the actual
+  DfE National Curriculum programme of study for each strand — not invented),
+  `misconceptionCategory` (one of 13 short tags, e.g. `place-value`,
+  `fraction-partitioning`, `time-reading`, used for diagnostic grouping) and
+  `estimatedSeconds` (a simple difficulty-based estimate, not tuned per question).
+  These ride inside the existing `responses` jsonb column when a result is saved —
+  **no database schema change was needed.**
+- **Two short context questions, not shown in the printed report.** After the
+  last maths question the child rates how the check felt (easy / OK / quite
+  difficult / very difficult); after the handover the parent rates how
+  independently their child worked (completely / a little help / a lot of help).
+  Both are stored with the result (`child_confidence`, `parent_independence`) for
+  interpreting the score, but are deliberately **not shown on the printed report**
+  — the report stays exactly as designed, and this keeps the child-facing question
+  simple and un-leading.
+- **Assessment duration is measured precisely.** `duration_seconds` covers only
+  the 30 maths questions (first question shown to last one answered) — it
+  deliberately excludes the two short survey screens, so it reflects genuine
+  time-on-task.
 - **One results table, JSON detail.** Every per-question answer is stored inside the
   session row (`responses`), so nothing is lost and analytics is possible later —
   without the complexity of extra tables for V1. Each row also records `percentage`,
@@ -102,30 +135,46 @@ requirements":
 - **Report leads with strengths**, uses gentle language, groups by curriculum strand,
   gives a practical "try at home" tip per area, and is honest that a short check is an
   early snapshot (Part 14).
+- **Area wording is deliberately non-absolute.** "Developing" strands read as "an
+  area worth exploring further together"; "practice" strands read as "additional
+  practice is likely to help build confidence" — never a flat "needs practice."
+  Any strand answered with 3 or fewer questions also gets an explicit caveat that
+  it's "an early signal to explore rather than a firm conclusion," since a strand
+  sampled by only a few questions genuinely doesn't support a strong claim.
 - **Option order is shuffled** per child so the answer isn't always in the same place.
 - **Child's first name** is collected (in addition to the required parent name/email)
   purely to personalise the report, as the Standards ask.
 
 ## Deliberately NOT in Version 1 (future work, once V1 is tested)
 
-Kept out to protect simplicity and reliability, as instructed:
+Kept out to protect simplicity and reliability, as instructed. (Statistics and
+Position & Direction are now **included** in v1.0-rc1 — all eight KS1 strands are
+covered.)
 
-- Statistics questions (KS1 statistics is Year 2 only and the lowest weighting —
-  documented omission, not an oversight).
 - Resume-after-refresh / autosave mid-check. The check is short; adding this brings
   edge cases and maintenance. Worth revisiting if testing shows a need.
 - Automatic emailing of the report (parents can save/print it for now).
-- Question rotation engine, adaptive difficulty, dashboards, other subjects/key stages.
+- Adaptive difficulty, dashboards, logins, lesson recommendations, other
+  subjects/key stages.
 
 ---
 
 ## Changing the questions
 
-Edit `questions.js` only. Each question follows the PTO metadata pattern (ID, skill
-ID, strand, difficulty, type, misconception, explanation). To adjust curriculum
-weighting, change how many questions each strand has. To add a picture, use one of
-the built-in illustration types (`dots`, `coins`, `shape`, `clock`).
+**Small edits:** open `questions.js` and change the wording or options of any
+question directly — each is a plain object with the PTO metadata (ID, skill ID,
+strand, difficulty, type, misconception, explanation).
+
+**Bulk changes:** use the optional `tools/generate-questions.js` script with Node
+(`node tools/generate-questions.js questions.js`) to regenerate the whole bank from
+templates. This is only an authoring convenience — the website itself never runs it.
+
+**Curriculum balance** is set by `STRAND_QUOTA` near the top of the selection logic
+in `app.js` (it must total `ASSESSMENT_LENGTH`, currently 37). **Illustrations** use
+the built-in types: `dots`, `array`, `coins`, `shape` (circle, square, rectangle,
+triangle, pentagon, hexagon), `clock` (o'clock and half past), `fraction`, `bars`
+and `pictogram`.
 
 ---
 
-Primary Tutor Online · KS1 Maths Skills Check · v1.0
+Primary Tutor Online · KS1 Maths Skills Check · v1.0-rc2

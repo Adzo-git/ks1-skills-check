@@ -30,7 +30,7 @@
       <div class="card">
         <span class="eyebrow">KS1 Maths Skills Check</span>
         <h1>A gentle maths check for your child</h1>
-        <p class="lead">About 15 short questions, taking roughly 5–10 minutes. There’s no timer and no pass or fail — it simply helps us see what your child is confident with and what to explore next.</p>
+        <p class="lead">About 37 short questions, taking roughly 12–18 minutes. There’s no timer and no pass or fail — it simply helps us see what your child is confident with and what to explore next.</p>
 
         <form id="setup-form" novalidate>
           <div class="field">
@@ -88,6 +88,14 @@
           <li><span class="dot">4</span><span>When you’ve chosen, tap <strong>Next</strong> to move on.</span></li>
         </ul>
 
+        <div class="note" id="parent-guidance">
+          <strong>A note for the grown-up:</strong> there’s no time limit, so please
+          let your child answer independently rather than prompting them. If
+          they’re not sure, a sensible guess is completely fine — it’s all useful
+          information. The aim of this check is to see what your child knows right
+          now, not to get a perfect score.
+        </div>
+
         <button type="button" id="to-questions-btn" class="btn btn-primary">Start the questions</button>
       </div>
     </section>
@@ -97,7 +105,7 @@
       <div class="card">
         <div class="progress-wrap">
           <div class="progress-top">
-            <span id="progress-count">Question 1 of 15</span>
+            <span id="progress-count">Question 1 of 37</span>
           </div>
           <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
         </div>
@@ -111,6 +119,32 @@
       </div>
     </section>
 
+    <!-- ============ SCREEN 3b: CONFIDENCE (child) ============ -->
+    <section id="screen-confidence" class="screen">
+      <div class="card">
+        <span class="eyebrow">Almost done</span>
+        <h1>How did you find today’s maths?</h1>
+        <p class="lead">Tap the face that matches how it felt.</p>
+
+        <div id="confidence-options" class="confidence-options" role="radiogroup" aria-label="How did you find today's maths?">
+          <button type="button" class="confidence-btn" data-value="easy" data-label="Easy">
+            <span class="emoji" aria-hidden="true">😀</span><span>Easy</span>
+          </button>
+          <button type="button" class="confidence-btn" data-value="ok" data-label="OK">
+            <span class="emoji" aria-hidden="true">🙂</span><span>OK</span>
+          </button>
+          <button type="button" class="confidence-btn" data-value="quite_difficult" data-label="Quite difficult">
+            <span class="emoji" aria-hidden="true">😐</span><span>Quite difficult</span>
+          </button>
+          <button type="button" class="confidence-btn" data-value="very_difficult" data-label="Very difficult">
+            <span class="emoji" aria-hidden="true">☹️</span><span>Very difficult</span>
+          </button>
+        </div>
+
+        <button type="button" id="confidence-next-btn" class="btn btn-primary" disabled>Next</button>
+      </div>
+    </section>
+
     <!-- ============ SCREEN 4: COMPLETE ============ -->
     <section id="screen-complete" class="screen">
       <div class="card celebrate">
@@ -119,7 +153,24 @@
         </div>
         <h1>Well done, <span id="child-name-done">friend</span>!</h1>
         <p class="handover">That’s the end of the check. Please pass the device back to your grown-up to see the report.</p>
-        <button type="button" id="show-report-btn" class="btn btn-primary">Show the report</button>
+        <button type="button" id="show-report-btn" class="btn btn-primary">Continue</button>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 4b: INDEPENDENCE (parent) ============ -->
+    <section id="screen-independence" class="screen">
+      <div class="card">
+        <span class="eyebrow">One last thing</span>
+        <h1>Welcome back</h1>
+        <p class="lead">How independently did your child complete this check? This helps us interpret the results accurately.</p>
+
+        <div id="independence-options" class="answers" role="radiogroup" aria-label="How independently did your child complete this check?">
+          <button type="button" class="answer" data-value="independent">Completely independently</button>
+          <button type="button" class="answer" data-value="a_little_help">Needed a little help</button>
+          <button type="button" class="answer" data-value="a_lot_of_help">Needed quite a lot of help</button>
+        </div>
+
+        <button type="button" id="to-report-btn" class="btn btn-primary" disabled>Show the report</button>
       </div>
     </section>
 
