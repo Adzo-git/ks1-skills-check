@@ -1,4 +1,4 @@
-# KS1 Maths Skills Check (Version 1.6)
+# KS1 Maths Skills Check (Version 1.6.1)
 
 A short, friendly Key Stage 1 maths check for **Primary Tutor Online**. A parent
 sets it up, the child answers **37 questions** one screen at a time, and the parent
@@ -324,4 +324,41 @@ frequency, report generation, Supabase row shape) passes unchanged.
 
 ---
 
-Primary Tutor Online · KS1 Maths Skills Check · v1.6
+## Crash fix (Version 1.6.1)
+
+**Bug:** `renderQuestion()` crashed on Question 1 with `Cannot set properties
+of null (setting 'textContent')`.
+
+**Root cause:** `$(id)` (the app's `document.getElementById` shorthand) had
+no guard — if `index.html` didn't have every element `app.js` expected
+(e.g. an `index.html` from before v1.4/v1.5 added `tip-box`, `tip-icon`,
+`tip-label`, `encourage-text`, paired with a newer `app.js`), `$()` returned
+`null` and the very next line (`.textContent = ...`) threw and stopped the
+whole assessment.
+
+**Fix:** `$()` now returns a safe no-op placeholder instead of `null` when
+an element is missing, and logs a clear console warning
+(`[PTO] Expected element #… was not found…`) so the gap stays visible to a
+developer without breaking the page for a child mid-assessment. This is a
+general safeguard — it isn't specific to the tip/encouragement elements
+that triggered this particular report, and protects every `$()` call in
+the file the same way.
+
+**Verified with three tests, not just a code read:**
+1. The current `index.html` + `app.js` together — zero warnings, zero
+   errors, from Question 1 through a full 37-question sitting.
+2. The exact failure reproduced deliberately (an `index.html` with
+   `tip-box`/`tip-icon`/`tip-label`/`encourage-text` removed) against the
+   *old* unguarded `$()` — confirmed it would have thrown, matching the
+   bug report exactly.
+3. The same deliberately-broken HTML against the *new* guarded `$()` — no
+   crash, 4 clear warnings logged, assessment continues normally.
+
+If you're seeing this crash, the most likely cause is `index.html` being
+out of sync with `app.js` — re-deploying the `index.html` in this delivery
+resolves it. The defensive fix in `app.js` means this specific failure mode
+can't recur even if a future file gets out of sync again.
+
+---
+
+Primary Tutor Online · KS1 Maths Skills Check · v1.6.1

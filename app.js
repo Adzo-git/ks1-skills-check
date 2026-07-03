@@ -28,7 +28,27 @@ const state = {
 };
 
 /* ---------- Small helpers ---------- */
-function $(id) { return document.getElementById(id); }
+// A safe stand-in for a missing DOM element. Every property/method used
+// elsewhere in this file (textContent, style, classList, event handling,
+// etc.) is a harmless no-op, so a missing element degrades gracefully
+// instead of throwing and breaking the whole assessment.
+function noOpElement() {
+  return {
+    textContent: "", innerHTML: "", value: "", disabled: false, checked: false,
+    style: {}, dataset: {},
+    classList: { add(){}, remove(){}, toggle(){}, contains(){ return false; } },
+    setAttribute(){}, getAttribute(){ return null; },
+    addEventListener(){}, appendChild(){}, querySelectorAll(){ return []; }
+  };
+}
+function $(id) {
+  const el = document.getElementById(id);
+  if (!el) {
+    console.warn(`[PTO] Expected element #${id} was not found on the page — using a placeholder so the assessment can continue.`);
+    return noOpElement();
+  }
+  return el;
+}
 
 function show(screenId) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
