@@ -1,4 +1,4 @@
-# KS1 Maths Skills Check (Version 1.1)
+# KS1 Maths Skills Check (Version 1.4)
 
 A short, friendly Key Stage 1 maths check for **Primary Tutor Online**. A parent
 sets it up, the child answers **37 questions** one screen at a time, and the parent
@@ -205,25 +205,44 @@ assessment length changed to support this — illustrations are purely a `q.illu
 field read by `renderIllustration()` in `app.js` and never touch the saved
 `responses` data.
 
-## Helpful Reminders (Version 1.1)
+## Maths Tips (Version 1.4)
 
-Every question now shows a small "💡 Helpful Reminder" box below the answer
-choices — encouragement and good habits ("take your time," "read carefully"),
-never a hint. One is picked at random per question from a bank of 8 general
-reminders plus 2–3 per curriculum strand (`GENERAL_REMINDERS` /
-`STRAND_REMINDERS` near the top of `app.js`), avoiding an immediate repeat
-where the pool allows it.
+Every question shows a small typed tip box below the answer choices — each
+tip now has a **type**, matching the wider PTO style used across lessons,
+worksheets and the home education book:
 
-Every reminder in the bank was checked to contain no numbers and no reference
-to any specific question, shape, or fact — they're the same regardless of
-which question is on screen, so they can't narrow down an answer. This was
-verified by simulating a full 37-question sitting and checking the reminder
-shown against that question's correct answer every time (zero matches).
+| Type | Icon | Used for |
+|---|---|---|
+| Maths Tip | 💡 | Practical mathematical strategies |
+| Remember | 🧠 | Key knowledge to hold in mind |
+| Top Tip | ⭐ | Helpful problem-solving approaches |
+| Look Carefully | 👀 | Careful observation |
+| Learning Habit | 🌱 | Confidence, resilience, growth mindset |
 
-This is purely a display addition: it reads `q.strand` and writes to a new
-`<div id="reminder-text">`, and touches nothing in the assessment engine,
-scoring, question selection, reporting, or Supabase.
+One tip is picked at random per question from a bank of **185 distinct
+tips** (`TIPS` near the top of `app.js`, each with `category`, `type`, and
+`text`) — 25 general tips (all `learningHabit`) plus 20 per curriculum
+strand, typed individually by what each one actually teaches (fact →
+`remember`, strategy → `mathsTip`, approach → `topTip`, observation →
+`lookCarefully`). Selection avoids an immediate repeat where the pool
+allows it. A simulated 37-question sitting showed 4–5 of the 5 types
+appearing per sitting with zero immediate repeats; across 500 simulated
+sittings (18,500 question-to-question transitions) the immediate-repeat
+rate was 0%.
+
+Every tip was checked to contain no numbers and no reference to any
+specific question, shape, or picture — this was verified automatically
+(zero tips contain a digit) and by checking a full sitting's tips against
+that question's correct answer text (zero matches).
+
+This is purely a content and presentation change: it reads `q.strand`,
+picks a tip object, and writes its icon/label/text into three existing
+elements (`#tip-icon`, `#tip-label`, `#tip-text`). The visual design
+(box, colours, spacing) is unchanged from v1.2 — only the label/icon are
+now dynamic instead of fixed to "💡 Maths Tip". Nothing in the assessment
+engine, scoring, question selection, reporting, illustrations, or Supabase
+was touched.
 
 ---
 
-Primary Tutor Online · KS1 Maths Skills Check · v1.1
+Primary Tutor Online · KS1 Maths Skills Check · v1.4
