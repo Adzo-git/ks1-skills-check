@@ -137,7 +137,7 @@ const TIPS = [
   { category:"NPV", type:"mathsTip",      text:"Counting in steps can help you move through numbers quickly." },
   { category:"NPV", type:"remember",      text:"Zero is a number too, and it has its own place value." },
   { category:"NPV", type:"mathsTip",      text:"Numbers can be broken apart into tens and ones." },
-  { category:"NPV", type:"topTip",        text:"Comparing numbers means looking at the biggest place first." },
+  { category:"NPV", type:"topTip",        text:"When comparing two numbers, check the tens digit first." },
   { category:"NPV", type:"topTip",        text:"Ordering numbers gets easier with practice." },
   { category:"NPV", type:"remember",      text:"Ten ones make one ten." },
   { category:"NPV", type:"remember",      text:"Numbers can be shown in lots of different ways." },
@@ -153,7 +153,7 @@ const TIPS = [
   { category:"AS", type:"remember",      text:"Subtraction can mean taking away or finding the difference." },
   { category:"AS", type:"mathsTip",      text:"Counting on can sometimes make addition easier." },
   { category:"AS", type:"mathsTip",      text:"Counting backwards can sometimes help with subtraction." },
-  { category:"AS", type:"topTip",        text:"Check your answer makes sense." },
+  { category:"AS", type:"topTip",        text:"Estimate roughly first, then check your exact answer is close to it." },
   { category:"AS", type:"remember",      text:"Number bonds can be useful building blocks." },
   { category:"AS", type:"remember",      text:"Adding in a different order gives the same total." },
   { category:"AS", type:"remember",      text:"Taking away makes a number smaller." },
@@ -182,7 +182,7 @@ const TIPS = [
   { category:"MD", type:"remember",      text:"Multiplication and division are connected to each other." },
   { category:"MD", type:"mathsTip",      text:"Counting in twos, fives and tens builds useful patterns." },
   { category:"MD", type:"remember",      text:"Halving is the opposite of doubling." },
-  { category:"MD", type:"lookCarefully", text:"Rows and columns can help you count arrays." },
+  { category:"MD", type:"lookCarefully", text:"Equal rows can help you see multiplication clearly." },
   { category:"MD", type:"remember",      text:"The same total can be made from different equal groups." },
   { category:"MD", type:"mathsTip",      text:"Thinking in groups can make big numbers easier to manage." },
   { category:"MD", type:"remember",      text:"Sharing fairly means each group has the same number." },
@@ -218,14 +218,14 @@ const TIPS = [
   { category:"MEA", type:"lookCarefully", text:"Think carefully about what is being measured." },
   { category:"MEA", type:"remember",      text:"Different objects can be measured in different ways." },
   { category:"MEA", type:"remember",      text:"Clocks always move forwards." },
-  { category:"MEA", type:"remember",      text:"Money has different values." },
+  { category:"MEA", type:"topTip",        text:"When counting coins, add the largest one first." },
   { category:"MEA", type:"lookCarefully", text:"Compare carefully before deciding." },
   { category:"MEA", type:"remember",      text:"Length tells us how long or short something is." },
   { category:"MEA", type:"remember",      text:"Mass tells us how heavy or light something is." },
   { category:"MEA", type:"remember",      text:"Capacity tells us how much something can hold." },
   { category:"MEA", type:"remember",      text:"Time can be measured in seconds, minutes and hours." },
   { category:"MEA", type:"remember",      text:"Coins and notes have different values, not just different sizes." },
-  { category:"MEA", type:"remember",      text:"The hands on a clock tell us different things." },
+  { category:"MEA", type:"remember",      text:"The short hand points to the hour, and the long hand points to the minutes." },
   { category:"MEA", type:"lookCarefully", text:"Comparing sizes carefully helps avoid mistakes." },
   { category:"MEA", type:"topTip",        text:"Estimating first can help you check your answer later." },
   { category:"MEA", type:"remember",      text:"Units help us measure things fairly and consistently." },
@@ -244,7 +244,7 @@ const TIPS = [
   { category:"GEO", type:"remember",      text:"Shapes can be sorted in different ways." },
   { category:"GEO", type:"remember",      text:"Every shape has its own special properties." },
   { category:"GEO", type:"lookCarefully", text:"Straight sides and curved sides look different." },
-  { category:"GEO", type:"lookCarefully", text:"Counting sides carefully helps identify a shape." },
+  { category:"GEO", type:"lookCarefully", text:"Count every side before deciding what a shape is called." },
   { category:"GEO", type:"remember",      text:"Shapes can be big or small and still be the same type." },
   { category:"GEO", type:"remember",      text:"Some shapes have equal sides, others do not." },
   { category:"GEO", type:"remember",      text:"Solid shapes have faces, edges and corners." },
@@ -263,7 +263,7 @@ const TIPS = [
   { category:"POS", type:"remember",      text:"Turning changes the direction you face." },
   { category:"POS", type:"remember",      text:"Left and right depend on which way you are facing." },
   { category:"POS", type:"remember",      text:"Arrows help us understand direction." },
-  { category:"POS", type:"topTip",        text:"Think about movement step by step." },
+  { category:"POS", type:"topTip",        text:"Picture yourself making the turn before you choose an answer." },
   { category:"POS", type:"remember",      text:"A full turn brings you back to where you started." },
   { category:"POS", type:"remember",      text:"Position words describe where something is." },
   { category:"POS", type:"remember",      text:"Direction words describe which way something moves." },
@@ -282,7 +282,7 @@ const TIPS = [
 
   // ---- STA (20) ----
   { category:"STA", type:"lookCarefully", text:"Count carefully before choosing." },
-  { category:"STA", type:"topTip",        text:"Read charts one row at a time." },
+  { category:"STA", type:"topTip",        text:"Count each row on its own before comparing them." },
   { category:"STA", type:"lookCarefully", text:"Check every picture before counting." },
   { category:"STA", type:"lookCarefully", text:"Looking carefully helps avoid mistakes." },
   { category:"STA", type:"topTip",        text:"Compare information before deciding." },
@@ -351,14 +351,14 @@ function pickEncouragement() {
    Small, static SVGs. Used only where a picture aids understanding. */
 function renderIllustration(ill) {
   if (!ill) return "";
-  if (ill.type === "dots") return svgDots(ill.count, ill.color || "#652da0", ill.emoji, ill.ariaLabel);
+  if (ill.type === "dots") return svgDots(ill.count, ill.color || "#652da0", ill.emoji, ill.ariaLabel, ill.scattered);
   if (ill.type === "emojigroups") {
     const glyphs = (ill.groups || []).flatMap(g => Array(g.count).fill(g.emoji));
     const label = (ill.groups || []).map(g => `${g.count} of one kind`).join(" and ");
-    return svgEmojiGrid(glyphs, label);
+    return svgEmojiGrid(glyphs, label, ill.scattered);
   }
-  if (ill.type === "array") return svgArray(ill.rows, ill.cols, ill.color || "#652da0");
-  if (ill.type === "coins") return svgCoins(ill.values);
+  if (ill.type === "array") return svgArray(ill.rows, ill.cols, ill.color || "#652da0", ill.emoji);
+  if (ill.type === "coins") return svgCoins(ill.values, ill.scattered);
   if (ill.type === "shape") return svgShape(ill.shape);
   if (ill.type === "clock") return svgClock(ill.hour, ill.minute || 0);
   if (ill.type === "fraction") return svgFraction(ill.parts, ill.shaded, ill.tall, ill.shape);
@@ -372,7 +372,7 @@ function renderIllustration(ill) {
   return "";
 }
 
-function svgDots(n, color, emoji, ariaLabel) {
+function svgDots(n, color, emoji, ariaLabel, scattered) {
   const perRow = 5, r = 20, gap = 20, pad = 16;
   const rows = Math.ceil(n / perRow);
   const cols = Math.min(n, perRow);
@@ -382,8 +382,15 @@ function svgDots(n, color, emoji, ariaLabel) {
   for (let i = 0; i < n; i++) {
     const row = Math.floor(i / perRow);
     const col = i % perRow;
-    const cx = pad + r + col * (r * 2 + gap);
-    const cy = pad + r + row * (r * 2 + gap);
+    let cx = pad + r + col * (r * 2 + gap);
+    let cy = pad + r + row * (r * 2 + gap);
+    if (scattered) {
+      // Deterministic jitter (not random) — a stable, testable "scattered"
+      // feel for real-object counting questions, with an offset well under
+      // half the gap so objects never overlap or leave the canvas.
+      cx += ((i * 37) % 13) - 6;
+      cy += ((i * 23) % 11) - 5;
+    }
     marks += emoji
       ? `<text x="${cx}" y="${cy + r * 0.65}" text-anchor="middle" font-size="${r * 1.7}">${emoji}</text>`
       : `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}"/>`;
@@ -399,7 +406,7 @@ function svgDots(n, color, emoji, ariaLabel) {
 // Array: rows x cols grid of dots (for equal groups / multiplication).
 // A flat wrapped grid of emoji glyphs, one per cell — used to show two named
 // groups (e.g. red apples + green apples) side by side without revealing a total.
-function svgEmojiGrid(glyphs, ariaLabel) {
+function svgEmojiGrid(glyphs, ariaLabel, scattered) {
   const perRow = 5, r = 20, gap = 20, pad = 16;
   const n = glyphs.length;
   const rows = Math.ceil(n / perRow), cols = Math.min(n, perRow);
@@ -408,7 +415,8 @@ function svgEmojiGrid(glyphs, ariaLabel) {
   let marks = "";
   glyphs.forEach((g, i) => {
     const row = Math.floor(i / perRow), col = i % perRow;
-    const cx = pad + r + col * (r * 2 + gap), cy = pad + r + row * (r * 2 + gap);
+    let cx = pad + r + col * (r * 2 + gap), cy = pad + r + row * (r * 2 + gap);
+    if (scattered) { cx += ((i * 37) % 13) - 6; cy += ((i * 23) % 11) - 5; }
     marks += `<text x="${cx}" y="${cy + r * 0.65}" text-anchor="middle" font-size="${r * 1.7}">${g}</text>`;
   });
   // aria-label deliberately never states the combined count — for a "how many
@@ -416,7 +424,7 @@ function svgEmojiGrid(glyphs, ariaLabel) {
   return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${ariaLabel || "A group of objects"}">${marks}</svg>`;
 }
 
-function svgArray(rows, cols, color) {
+function svgArray(rows, cols, color, emoji) {
   const r = 16, gap = 18, pad = 16;
   const w = pad * 2 + cols * (r * 2) + (cols - 1) * gap;
   const h = pad * 2 + rows * (r * 2) + (rows - 1) * gap;
@@ -425,20 +433,26 @@ function svgArray(rows, cols, color) {
     for (let cx = 0; cx < cols; cx++) {
       const x = pad + r + cx * (r * 2 + gap);
       const y = pad + r + ry * (r * 2 + gap);
-      out += `<circle cx="${x}" cy="${y}" r="${r}" fill="${color}"/>`;
+      out += emoji
+        ? `<text x="${x}" y="${y + r * 0.65}" text-anchor="middle" font-size="${r * 1.7}">${emoji}</text>`
+        : `<circle cx="${x}" cy="${y}" r="${r}" fill="${color}"/>`;
     }
   }
-  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="A grid of dots">${out}</svg>`;
+  // The row/column GRID is the mathematical model being taught here — that
+  // structure is preserved exactly whether each cell is a plain dot or a
+  // themed icon, so theming it doesn't compromise the array concept.
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="A grid of ${rows} rows and ${cols} columns">${out}</svg>`;
 }
 
-function svgCoins(values) {
+function svgCoins(values, scattered) {
   const r = 40, gap = 22, pad = 12;
   const w = pad * 2 + values.length * (r * 2) + (values.length - 1) * gap;
-  const h = pad * 2 + r * 2;
+  const h = pad * 2 + r * 2 + (scattered ? 10 : 0);
   let out = "";
   values.forEach((v, i) => {
-    const cx = pad + r + i * (r * 2 + gap);
-    const cy = pad + r;
+    let cx = pad + r + i * (r * 2 + gap);
+    let cy = pad + r + (scattered ? 5 : 0);
+    if (scattered) { cx += ((i * 37) % 13) - 6; cy += ((i * 23) % 11) - 5; }
     out += `
       <circle cx="${cx}" cy="${cy}" r="${r}" fill="#e9c34a" stroke="#c79a1f" stroke-width="3"/>
       <circle cx="${cx}" cy="${cy}" r="${r - 7}" fill="none" stroke="#c79a1f" stroke-width="1.5" opacity="0.6"/>
@@ -548,6 +562,16 @@ function svgBars(bars) {
 }
 
 // Pictogram: rows of pictures, one row per category, with a label.
+// Maps a pictogram/tally row label to a real themed icon. Falls back to a
+// plain circle only for labels not in this list, so pictograms genuinely
+// show pictures — matching what "pictogram" means — rather than dots.
+const PICTO_ICONS = {
+  Apples: "🍎", Pears: "🍐", Plums: "🟣",
+  Cats: "🐱", Dogs: "🐶", Fish: "🐟",
+  Red: "🔴", Blue: "🔵", Green: "🟢",
+  Buses: "🚌", Cars: "🚗", Bikes: "🚲"
+};
+
 function svgPictogram(rows) {
   const pad = 12, labelW = 90, r = 13, gap = 8, rowH = 34;
   const maxCount = Math.max(...rows.map(x => x.count));
@@ -556,10 +580,13 @@ function svgPictogram(rows) {
   let out = "";
   rows.forEach((row, i) => {
     const cy = pad + i * rowH + rowH / 2;
+    const icon = PICTO_ICONS[row.label];
     out += `<text x="${pad}" y="${cy + 5}" font-size="16" font-weight="600" font-family="Poppins, Arial" fill="#4e2280">${escapeHtml(row.label)}</text>`;
     for (let k = 0; k < row.count; k++) {
       const cx = pad + labelW + r + k * (r * 2 + gap);
-      out += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#652da0"/>`;
+      out += icon
+        ? `<text x="${cx}" y="${cy + r * 0.6}" text-anchor="middle" font-size="${r * 1.6}">${icon}</text>`
+        : `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#652da0"/>`;
     }
   });
   return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="A pictogram">${out}</svg>`;

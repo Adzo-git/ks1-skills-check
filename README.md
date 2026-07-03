@@ -1,4 +1,4 @@
-# KS1 Maths Skills Check (Version 1.6.1)
+# KS1 Maths Skills Check (Version 1.9)
 
 A short, friendly Key Stage 1 maths check for **Primary Tutor Online**. A parent
 sets it up, the child answers **37 questions** one screen at a time, and the parent
@@ -361,4 +361,143 @@ can't recur even if a future file gets out of sync again.
 
 ---
 
-Primary Tutor Online · KS1 Maths Skills Check · v1.6.1
+## Toward the "Version 2.0" vision (v1.7 — a genuine first slice, not the whole thing)
+
+The v2.0 brief asked for every one of 360 questions to be individually
+reviewed by "an experienced KS1 teacher, curriculum designer, and children's
+illustrator." That's real, valuable, multi-session work — this release is a
+**verified first slice** of it, not a claim that the full review is done.
+Strand colours were explicitly kept unchanged (already correct, per your
+confirmation) — no code change needed there.
+
+**What shipped:**
+
+1. **Pictograms now show real themed icons, not plain purple circles** — a
+   genuine bug fix as much as a style improvement (a "pictogram" showing
+   dots wasn't actually a pictogram). `Apples`→🍎, `Cats`→🐱, `Buses`→🚌, and
+   critically **`Red`/`Blue`/`Green`→🔴🔵🟢**, directly matching the brief's
+   own pattern-question example. `Plums` uses a purple circle rather than a
+   fabricated "plum emoji" — an honest stand-in, not a claim to photorealism.
+2. **Scattered (non-grid) layout for real-object counting questions.** All
+   10 `NPV-COUNT` questions now place their objects with a deterministic
+   jitter instead of a tidy grid, so children genuinely count rather than
+   recognise a row shape — matching "children should genuinely count, not
+   recognise a line." Verified mathematically *and* against the actual
+   generated SVGs that no two objects can ever overlap (minimum pairwise
+   distance 54–58px against a 40px safety threshold).
+3. **Light micro-story characters** in the two word-problem questions —
+   Emily, Oliver, Sophie, and Ben (a boy/girl mix, as requested) now appear
+   as "Emily has 4 red apples..." rather than "There are 4 red apples...".
+   Implemented as **text only** — no drawn character art exists, and
+   inventing placeholder illustrations would risk exactly the
+   inconsistent, clip-art look the Design System explicitly rejects.
+4. **Illustrations are larger on desktop**, via a `min-width: 700px` media
+   query only — mobile is byte-for-byte unaffected below that width.
+
+**Verified, not asserted:** full aria-label leak sweep across all 204
+illustrated questions (0 leaks); scatter-overlap check against the actual
+generated coordinates for all 10 real questions (not just the formula in
+isolation); a full 37-question sitting rendered with 0 failures; report and
+Supabase row shape confirmed unchanged.
+
+**Deliberately not done this round, and why** (see also `DESIGN_SYSTEM.md`):
+
+- **Individual review of all 360 questions.** Only the questions with a
+  clear, concrete match to the brief (real-object counting, statistics
+  pictograms, the two word problems) were changed. The rest — abstract
+  number questions, "counters" sharing/halving questions, geometry, arrays,
+  fractions, measurement — were already using correct mathematical models
+  and weren't mechanically touched, consistent with "do not replace genuine
+  mathematical representations."
+- **Shapes embedded in real objects** (house, rocket, castle, robot) —
+  a real illustration-design task requiring new artwork, not a data change.
+- **Drawn character illustrations** — same reason; used as text instead.
+- **Pattern questions** (red/blue/green sequences) — these don't currently
+  exist in the question bank. The pictogram colour-icon work above is ready
+  for them, but adding new pattern *questions* is new content, not an
+  illustration pass, so it wasn't added without being asked for explicitly.
+
+**One recommendation for your consideration** (not implemented, per your
+instruction to flag rather than change): `Plums` could use a genuine fruit
+emoji if you're open to a close-but-imperfect match (e.g. 🍇 grapes) rather
+than a purple circle — a small trade-off between visual accuracy and
+literal correctness, worth a quick call rather than me guessing.
+
+---
+
+## Continuing toward the illustrated-workbook feel (v1.8)
+
+A further verified slice, same honest scope as v1.7 — not a claim that all
+360 questions have now been reviewed.
+
+**What shipped:**
+
+1. **Arrays now show themed objects while keeping the row/column grid
+   intact** — `MD-GROUPS` ("How many eggs altogether?") shows 🥚 in rows,
+   `MD-ARRAY` ("How many oranges are in this array?") shows 🍊. The
+   *structure* (rows × columns) is the genuine mathematical model and is
+   completely unchanged — only the dot became a themed icon. Question text
+   was updated to match ("dots" → "eggs"/"oranges") so text and picture
+   never disagree.
+2. **`MEA-MOSTCOIN` ("which is the largest amount of money?") now has an
+   illustration** — previously text-only. Shows the actual coins named in
+   the answer options (already given as text, so nothing new is revealed).
+3. **Small-scene feel via scattered layout**, extended to three more
+   contexts: the apple/cake word problems, and money questions
+   (`MEA-MONEY`, `MEA-MOSTCOIN`) — coins now sit naturally rather than in a
+   straight row, echoing real coins spilled on a table.
+4. **10 Maths Tips sharpened** toward the "strategy for this thinking, not
+   generic encouragement" style from your own examples — e.g. "The hands
+   on a clock tell us different things" → "The short hand points to the
+   hour, and the long hand points to the minutes"; "Rows and columns can
+   help you count arrays" → "Equal rows can help you see multiplication
+   clearly." Bank re-verified: still exactly 185, all unique, zero digits.
+
+**Verified, not asserted:** full aria-label leak sweep across all 209
+illustrated questions (0 leaks, including the 5 newly-illustrated
+`MEA-MOSTCOIN` questions); every new scattered illustration checked against
+its actual generated coordinates; full 37-question sitting with 0 render
+failures and 0 missing tips; report and Supabase row shape unchanged.
+
+**Still deliberately not done** (same reasons as v1.7 — see `DESIGN_SYSTEM.md`
+and the note above): full individual review of all 360 questions; shapes
+embedded in real-object silhouettes; drawn character illustrations; a full
+pass over all 185 tips (10 of the weakest were sharpened this round as a
+representative sample, not an exhaustive rewrite).
+
+---
+
+## Continuing the illustration pass (v1.9)
+
+**What shipped:**
+
+1. **The last four "counters" questions are now real objects.** `MD-SHARE`
+   ("Share sweets equally between children") uses 🍬, `MD-GROUP` ("groups of
+   toy cars") uses 🚗, `FRA-HALFQ` ("half of these stickers") uses ⭐,
+   `FRA-QUARTERQ` ("a quarter of these cookies") uses 🍪 — all scattered
+   rather than gridded, and all with question text updated to match (no
+   question anywhere in the bank still says "counters" — confirmed by a
+   full-text search). This closes out the "counters" family that was
+   deliberately left alone in v1.7 as a legitimate mathematical manipulative;
+   on reflection, sharing sweets between friends or splitting cookies is a
+   genuinely more concrete framing for 5–7 year olds than an abstract
+   "counter," so these were worth converting.
+2. **2 more Maths Tips sharpened** — the array tip and a money tip now tie
+   directly to real strategies already used elsewhere in the app (the money
+   tip, "add the largest coin first," is the same strategy already given as
+   a `teacherNote` on the money-counting question — the tip and the
+   question design now reinforce each other).
+
+**Verified, not asserted:** full aria-label leak sweep across all 209
+illustrated questions (0 leaks); confirmed zero remaining "counters"
+references anywhere in question text; tip bank re-checked (185, unique,
+zero digits); full 37-question sitting with 0 render failures, 0 missing
+tips; report and Supabase row shape unchanged.
+
+**Remaining scope**, unchanged from v1.8: full individual review of all 360
+questions, shapes-in-real-object silhouettes, drawn character illustrations,
+and a full pass over the remaining ~173 tips.
+
+---
+
+Primary Tutor Online · KS1 Maths Skills Check · v1.9

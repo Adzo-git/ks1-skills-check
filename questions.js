@@ -70,7 +70,8 @@ const PTO_QUESTIONS = [
       "type": "dots",
       "count": 3,
       "emoji": "🚗",
-      "ariaLabel": "A group of toy cars to count"
+      "ariaLabel": "A group of toy cars to count",
+      "scattered": true
     },
     "options": [
       3,
@@ -96,7 +97,8 @@ const PTO_QUESTIONS = [
       "type": "dots",
       "count": 4,
       "emoji": "🚌",
-      "ariaLabel": "A group of buses to count"
+      "ariaLabel": "A group of buses to count",
+      "scattered": true
     },
     "options": [
       4,
@@ -122,7 +124,8 @@ const PTO_QUESTIONS = [
       "type": "dots",
       "count": 5,
       "emoji": "🍎",
-      "ariaLabel": "A group of apples to count"
+      "ariaLabel": "A group of apples to count",
+      "scattered": true
     },
     "options": [
       5,
@@ -148,7 +151,8 @@ const PTO_QUESTIONS = [
       "type": "dots",
       "count": 6,
       "emoji": "✏️",
-      "ariaLabel": "A group of pencils to count"
+      "ariaLabel": "A group of pencils to count",
+      "scattered": true
     },
     "options": [
       6,
@@ -174,7 +178,8 @@ const PTO_QUESTIONS = [
       "type": "dots",
       "count": 7,
       "emoji": "📚",
-      "ariaLabel": "A group of books to count"
+      "ariaLabel": "A group of books to count",
+      "scattered": true
     },
     "options": [
       7,
@@ -200,7 +205,8 @@ const PTO_QUESTIONS = [
       "type": "dots",
       "count": 8,
       "emoji": "🌸",
-      "ariaLabel": "A group of flowers to count"
+      "ariaLabel": "A group of flowers to count",
+      "scattered": true
     },
     "options": [
       8,
@@ -226,7 +232,8 @@ const PTO_QUESTIONS = [
       "type": "dots",
       "count": 9,
       "emoji": "⚽",
-      "ariaLabel": "A group of footballs to count"
+      "ariaLabel": "A group of footballs to count",
+      "scattered": true
     },
     "options": [
       9,
@@ -252,7 +259,8 @@ const PTO_QUESTIONS = [
       "type": "dots",
       "count": 10,
       "emoji": "🍬",
-      "ariaLabel": "A group of sweets to count"
+      "ariaLabel": "A group of sweets to count",
+      "scattered": true
     },
     "options": [
       10,
@@ -278,7 +286,8 @@ const PTO_QUESTIONS = [
       "type": "dots",
       "count": 12,
       "emoji": "🚗",
-      "ariaLabel": "A group of toy cars to count"
+      "ariaLabel": "A group of toy cars to count",
+      "scattered": true
     },
     "options": [
       12,
@@ -304,7 +313,8 @@ const PTO_QUESTIONS = [
       "type": "dots",
       "count": 14,
       "emoji": "🚌",
-      "ariaLabel": "A group of buses to count"
+      "ariaLabel": "A group of buses to count",
+      "scattered": true
     },
     "options": [
       14,
@@ -3898,7 +3908,7 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": null,
-    "text": "There are 4 red apples and 5 green apples. How many altogether?",
+    "text": "Emily has 4 red apples and 5 green apples. How many altogether?",
     "illustration": {
       "type": "emojigroups",
       "groups": [
@@ -3910,7 +3920,8 @@ const PTO_QUESTIONS = [
           "emoji": "🍏",
           "count": 5
         }
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       9,
@@ -3931,7 +3942,7 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": null,
-    "text": "There are 6 red apples and 3 green apples. How many altogether?",
+    "text": "Oliver has 6 red apples and 3 green apples. How many altogether?",
     "illustration": {
       "type": "emojigroups",
       "groups": [
@@ -3943,7 +3954,8 @@ const PTO_QUESTIONS = [
           "emoji": "🍏",
           "count": 3
         }
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       9,
@@ -3964,7 +3976,7 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": null,
-    "text": "There are 7 red apples and 8 green apples. How many altogether?",
+    "text": "Sophie has 7 red apples and 8 green apples. How many altogether?",
     "illustration": {
       "type": "emojigroups",
       "groups": [
@@ -3976,7 +3988,8 @@ const PTO_QUESTIONS = [
           "emoji": "🍏",
           "count": 8
         }
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       15,
@@ -3997,7 +4010,7 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": null,
-    "text": "There are 5 red apples and 9 green apples. How many altogether?",
+    "text": "Ben has 5 red apples and 9 green apples. How many altogether?",
     "illustration": {
       "type": "emojigroups",
       "groups": [
@@ -4009,7 +4022,8 @@ const PTO_QUESTIONS = [
           "emoji": "🍏",
           "count": 9
         }
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       14,
@@ -4030,7 +4044,7 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": null,
-    "text": "There are 3 red apples and 6 green apples. How many altogether?",
+    "text": "Emily has 3 red apples and 6 green apples. How many altogether?",
     "illustration": {
       "type": "emojigroups",
       "groups": [
@@ -4042,7 +4056,8 @@ const PTO_QUESTIONS = [
           "emoji": "🍏",
           "count": 6
         }
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       9,
@@ -4063,11 +4078,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": null,
-    "text": "There are 8 cakes. 3 are eaten. How many are left?",
+    "text": "Oliver has 8 cakes. 3 are eaten. How many are left?",
     "illustration": {
       "type": "dots",
       "count": 8,
-      "emoji": "🍰"
+      "emoji": "🍰",
+      "scattered": true
     },
     "options": [
       5,
@@ -4088,11 +4104,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": null,
-    "text": "There are 10 cakes. 4 are eaten. How many are left?",
+    "text": "Sophie has 10 cakes. 4 are eaten. How many are left?",
     "illustration": {
       "type": "dots",
       "count": 10,
-      "emoji": "🍰"
+      "emoji": "🍰",
+      "scattered": true
     },
     "options": [
       6,
@@ -4113,11 +4130,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": null,
-    "text": "There are 9 cakes. 5 are eaten. How many are left?",
+    "text": "Ben has 9 cakes. 5 are eaten. How many are left?",
     "illustration": {
       "type": "dots",
       "count": 9,
-      "emoji": "🍰"
+      "emoji": "🍰",
+      "scattered": true
     },
     "options": [
       4,
@@ -4138,11 +4156,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": null,
-    "text": "There are 7 cakes. 2 are eaten. How many are left?",
+    "text": "Emily has 7 cakes. 2 are eaten. How many are left?",
     "illustration": {
       "type": "dots",
       "count": 7,
-      "emoji": "🍰"
+      "emoji": "🍰",
+      "scattered": true
     },
     "options": [
       5,
@@ -4163,11 +4182,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": null,
-    "text": "There are 12 cakes. 5 are eaten. How many are left?",
+    "text": "Oliver has 12 cakes. 5 are eaten. How many are left?",
     "illustration": {
       "type": "dots",
       "count": 12,
-      "emoji": "🍰"
+      "emoji": "🍰",
+      "scattered": true
     },
     "options": [
       7,
@@ -4493,12 +4513,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": "Repeated addition supports this.",
-    "text": "How many dots altogether?",
+    "text": "How many eggs altogether?",
     "illustration": {
       "type": "array",
       "rows": 2,
       "cols": 3,
-      "color": "#652da0"
+      "emoji": "🥚"
     },
     "options": [
       6,
@@ -4519,12 +4539,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": "Repeated addition supports this.",
-    "text": "How many dots altogether?",
+    "text": "How many eggs altogether?",
     "illustration": {
       "type": "array",
       "rows": 3,
       "cols": 2,
-      "color": "#652da0"
+      "emoji": "🥚"
     },
     "options": [
       6,
@@ -4545,12 +4565,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": "Repeated addition supports this.",
-    "text": "How many dots altogether?",
+    "text": "How many eggs altogether?",
     "illustration": {
       "type": "array",
       "rows": 2,
       "cols": 5,
-      "color": "#652da0"
+      "emoji": "🥚"
     },
     "options": [
       10,
@@ -4571,12 +4591,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": "Repeated addition supports this.",
-    "text": "How many dots altogether?",
+    "text": "How many eggs altogether?",
     "illustration": {
       "type": "array",
       "rows": 4,
       "cols": 2,
-      "color": "#652da0"
+      "emoji": "🥚"
     },
     "options": [
       8,
@@ -4597,12 +4617,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": "Repeated addition supports this.",
-    "text": "How many dots altogether?",
+    "text": "How many eggs altogether?",
     "illustration": {
       "type": "array",
       "rows": 3,
       "cols": 3,
-      "color": "#652da0"
+      "emoji": "🥚"
     },
     "options": [
       9,
@@ -4623,12 +4643,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": "Repeated addition supports this.",
-    "text": "How many dots altogether?",
+    "text": "How many eggs altogether?",
     "illustration": {
       "type": "array",
       "rows": 2,
       "cols": 4,
-      "color": "#652da0"
+      "emoji": "🥚"
     },
     "options": [
       8,
@@ -4649,12 +4669,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "How many dots are in this array?",
+    "text": "How many oranges are in this array?",
     "illustration": {
       "type": "array",
       "rows": 2,
       "cols": 5,
-      "color": "#e0483f"
+      "emoji": "🍊"
     },
     "options": [
       10,
@@ -4663,7 +4683,7 @@ const PTO_QUESTIONS = [
       5
     ],
     "correctIndex": 0,
-    "explanation": "2 rows of 5 is 10 dots.",
+    "explanation": "2 rows of 5 is 10 oranges.",
     "misconception": "Counts only one row or adds the sides."
   },
   {
@@ -4675,12 +4695,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "How many dots are in this array?",
+    "text": "How many oranges are in this array?",
     "illustration": {
       "type": "array",
       "rows": 3,
       "cols": 4,
-      "color": "#e0483f"
+      "emoji": "🍊"
     },
     "options": [
       12,
@@ -4689,7 +4709,7 @@ const PTO_QUESTIONS = [
       8
     ],
     "correctIndex": 0,
-    "explanation": "3 rows of 4 is 12 dots.",
+    "explanation": "3 rows of 4 is 12 oranges.",
     "misconception": "Counts only one row or adds the sides."
   },
   {
@@ -4701,12 +4721,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "How many dots are in this array?",
+    "text": "How many oranges are in this array?",
     "illustration": {
       "type": "array",
       "rows": 2,
       "cols": 6,
-      "color": "#e0483f"
+      "emoji": "🍊"
     },
     "options": [
       12,
@@ -4715,7 +4735,7 @@ const PTO_QUESTIONS = [
       6
     ],
     "correctIndex": 0,
-    "explanation": "2 rows of 6 is 12 dots.",
+    "explanation": "2 rows of 6 is 12 oranges.",
     "misconception": "Counts only one row or adds the sides."
   },
   {
@@ -4727,12 +4747,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "How many dots are in this array?",
+    "text": "How many oranges are in this array?",
     "illustration": {
       "type": "array",
       "rows": 4,
       "cols": 3,
-      "color": "#e0483f"
+      "emoji": "🍊"
     },
     "options": [
       12,
@@ -4741,7 +4761,7 @@ const PTO_QUESTIONS = [
       9
     ],
     "correctIndex": 0,
-    "explanation": "4 rows of 3 is 12 dots.",
+    "explanation": "4 rows of 3 is 12 oranges.",
     "misconception": "Counts only one row or adds the sides."
   },
   {
@@ -4753,12 +4773,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "How many dots are in this array?",
+    "text": "How many oranges are in this array?",
     "illustration": {
       "type": "array",
       "rows": 5,
       "cols": 2,
-      "color": "#e0483f"
+      "emoji": "🍊"
     },
     "options": [
       10,
@@ -4767,7 +4787,7 @@ const PTO_QUESTIONS = [
       8
     ],
     "correctIndex": 0,
-    "explanation": "5 rows of 2 is 10 dots.",
+    "explanation": "5 rows of 2 is 10 oranges.",
     "misconception": "Counts only one row or adds the sides."
   },
   {
@@ -4989,11 +5009,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": "Sharing links to division.",
-    "text": "Share 10 counters equally between 2 children. How many each?",
+    "text": "Share 10 sweets equally between 2 children. How many each?",
     "illustration": {
       "type": "dots",
       "count": 10,
-      "color": "#652da0"
+      "emoji": "🍬",
+      "scattered": true
     },
     "options": [
       5,
@@ -5014,11 +5035,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": "Sharing links to division.",
-    "text": "Share 12 counters equally between 2 children. How many each?",
+    "text": "Share 12 sweets equally between 2 children. How many each?",
     "illustration": {
       "type": "dots",
       "count": 12,
-      "color": "#652da0"
+      "emoji": "🍬",
+      "scattered": true
     },
     "options": [
       6,
@@ -5039,11 +5061,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": "Sharing links to division.",
-    "text": "Share 8 counters equally between 2 children. How many each?",
+    "text": "Share 8 sweets equally between 2 children. How many each?",
     "illustration": {
       "type": "dots",
       "count": 8,
-      "color": "#652da0"
+      "emoji": "🍬",
+      "scattered": true
     },
     "options": [
       4,
@@ -5064,11 +5087,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": "Sharing links to division.",
-    "text": "Share 6 counters equally between 3 children. How many each?",
+    "text": "Share 6 sweets equally between 3 children. How many each?",
     "illustration": {
       "type": "dots",
       "count": 6,
-      "color": "#652da0"
+      "emoji": "🍬",
+      "scattered": true
     },
     "options": [
       2,
@@ -5089,11 +5113,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": "Sharing links to division.",
-    "text": "Share 9 counters equally between 3 children. How many each?",
+    "text": "Share 9 sweets equally between 3 children. How many each?",
     "illustration": {
       "type": "dots",
       "count": 9,
-      "color": "#652da0"
+      "emoji": "🍬",
+      "scattered": true
     },
     "options": [
       3,
@@ -5114,11 +5139,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": "Sharing links to division.",
-    "text": "Share 12 counters equally between 3 children. How many each?",
+    "text": "Share 12 sweets equally between 3 children. How many each?",
     "illustration": {
       "type": "dots",
       "count": 12,
-      "color": "#652da0"
+      "emoji": "🍬",
+      "scattered": true
     },
     "options": [
       4,
@@ -5139,11 +5165,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": "Sharing links to division.",
-    "text": "Share 20 counters equally between 2 children. How many each?",
+    "text": "Share 20 sweets equally between 2 children. How many each?",
     "illustration": {
       "type": "dots",
       "count": 20,
-      "color": "#652da0"
+      "emoji": "🍬",
+      "scattered": true
     },
     "options": [
       10,
@@ -5164,11 +5191,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Application",
     "teacherNote": "Sharing links to division.",
-    "text": "Share 10 counters equally between 5 children. How many each?",
+    "text": "Share 10 sweets equally between 5 children. How many each?",
     "illustration": {
       "type": "dots",
       "count": 10,
-      "color": "#652da0"
+      "emoji": "🍬",
+      "scattered": true
     },
     "options": [
       2,
@@ -5189,11 +5217,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Greater Depth",
     "type": "Reasoning",
     "teacherNote": null,
-    "text": "How many groups of 2 are in 6?",
+    "text": "How many groups of 2 toy cars are in 6?",
     "illustration": {
       "type": "dots",
       "count": 6,
-      "color": "#e0483f"
+      "emoji": "🚗",
+      "scattered": true
     },
     "options": [
       3,
@@ -5214,11 +5243,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Greater Depth",
     "type": "Reasoning",
     "teacherNote": null,
-    "text": "How many groups of 2 are in 10?",
+    "text": "How many groups of 2 toy cars are in 10?",
     "illustration": {
       "type": "dots",
       "count": 10,
-      "color": "#e0483f"
+      "emoji": "🚗",
+      "scattered": true
     },
     "options": [
       5,
@@ -5239,11 +5269,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Greater Depth",
     "type": "Reasoning",
     "teacherNote": null,
-    "text": "How many groups of 2 are in 8?",
+    "text": "How many groups of 2 toy cars are in 8?",
     "illustration": {
       "type": "dots",
       "count": 8,
-      "color": "#e0483f"
+      "emoji": "🚗",
+      "scattered": true
     },
     "options": [
       4,
@@ -5264,11 +5295,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Greater Depth",
     "type": "Reasoning",
     "teacherNote": null,
-    "text": "How many groups of 3 are in 9?",
+    "text": "How many groups of 3 toy cars are in 9?",
     "illustration": {
       "type": "dots",
       "count": 9,
-      "color": "#e0483f"
+      "emoji": "🚗",
+      "scattered": true
     },
     "options": [
       3,
@@ -5289,11 +5321,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Greater Depth",
     "type": "Reasoning",
     "teacherNote": null,
-    "text": "How many groups of 3 are in 12?",
+    "text": "How many groups of 3 toy cars are in 12?",
     "illustration": {
       "type": "dots",
       "count": 12,
-      "color": "#e0483f"
+      "emoji": "🚗",
+      "scattered": true
     },
     "options": [
       4,
@@ -5314,11 +5347,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Greater Depth",
     "type": "Reasoning",
     "teacherNote": null,
-    "text": "How many groups of 5 are in 15?",
+    "text": "How many groups of 5 toy cars are in 15?",
     "illustration": {
       "type": "dots",
       "count": 15,
-      "color": "#e0483f"
+      "emoji": "🚗",
+      "scattered": true
     },
     "options": [
       3,
@@ -5495,11 +5529,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "What is half of these 4 counters?",
+    "text": "What is half of these 4 stickers?",
     "illustration": {
       "type": "dots",
       "count": 4,
-      "color": "#652da0"
+      "emoji": "⭐",
+      "scattered": true
     },
     "options": [
       2,
@@ -5520,11 +5555,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "What is half of these 6 counters?",
+    "text": "What is half of these 6 stickers?",
     "illustration": {
       "type": "dots",
       "count": 6,
-      "color": "#652da0"
+      "emoji": "⭐",
+      "scattered": true
     },
     "options": [
       3,
@@ -5545,11 +5581,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "What is half of these 8 counters?",
+    "text": "What is half of these 8 stickers?",
     "illustration": {
       "type": "dots",
       "count": 8,
-      "color": "#652da0"
+      "emoji": "⭐",
+      "scattered": true
     },
     "options": [
       4,
@@ -5570,11 +5607,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "What is half of these 10 counters?",
+    "text": "What is half of these 10 stickers?",
     "illustration": {
       "type": "dots",
       "count": 10,
-      "color": "#652da0"
+      "emoji": "⭐",
+      "scattered": true
     },
     "options": [
       5,
@@ -5595,11 +5633,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "What is half of these 12 counters?",
+    "text": "What is half of these 12 stickers?",
     "illustration": {
       "type": "dots",
       "count": 12,
-      "color": "#652da0"
+      "emoji": "⭐",
+      "scattered": true
     },
     "options": [
       6,
@@ -5620,11 +5659,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Secure",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "What is half of these 16 counters?",
+    "text": "What is half of these 16 stickers?",
     "illustration": {
       "type": "dots",
       "count": 16,
-      "color": "#652da0"
+      "emoji": "⭐",
+      "scattered": true
     },
     "options": [
       8,
@@ -5645,11 +5685,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Greater Depth",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "What is a quarter of these 4 counters?",
+    "text": "What is a quarter of these 4 cookies?",
     "illustration": {
       "type": "dots",
       "count": 4,
-      "color": "#e0483f"
+      "emoji": "🍪",
+      "scattered": true
     },
     "options": [
       1,
@@ -5670,11 +5711,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Greater Depth",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "What is a quarter of these 8 counters?",
+    "text": "What is a quarter of these 8 cookies?",
     "illustration": {
       "type": "dots",
       "count": 8,
-      "color": "#e0483f"
+      "emoji": "🍪",
+      "scattered": true
     },
     "options": [
       2,
@@ -5695,11 +5737,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Greater Depth",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "What is a quarter of these 12 counters?",
+    "text": "What is a quarter of these 12 cookies?",
     "illustration": {
       "type": "dots",
       "count": 12,
-      "color": "#e0483f"
+      "emoji": "🍪",
+      "scattered": true
     },
     "options": [
       3,
@@ -5720,11 +5763,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Greater Depth",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "What is a quarter of these 16 counters?",
+    "text": "What is a quarter of these 16 cookies?",
     "illustration": {
       "type": "dots",
       "count": 16,
-      "color": "#e0483f"
+      "emoji": "🍪",
+      "scattered": true
     },
     "options": [
       4,
@@ -5745,11 +5789,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Greater Depth",
     "type": "Understanding",
     "teacherNote": null,
-    "text": "What is a quarter of these 20 counters?",
+    "text": "What is a quarter of these 20 cookies?",
     "illustration": {
       "type": "dots",
       "count": 20,
-      "color": "#e0483f"
+      "emoji": "🍪",
+      "scattered": true
     },
     "options": [
       5,
@@ -6208,7 +6253,8 @@ const PTO_QUESTIONS = [
         10,
         5,
         2
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       "17p",
@@ -6235,7 +6281,8 @@ const PTO_QUESTIONS = [
       "values": [
         10,
         10
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       "20p",
@@ -6263,7 +6310,8 @@ const PTO_QUESTIONS = [
         5,
         5,
         2
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       "12p",
@@ -6290,7 +6338,8 @@ const PTO_QUESTIONS = [
       "values": [
         20,
         5
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       "25p",
@@ -6318,7 +6367,8 @@ const PTO_QUESTIONS = [
         10,
         2,
         2
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       "14p",
@@ -6346,7 +6396,8 @@ const PTO_QUESTIONS = [
         5,
         2,
         1
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       "8p",
@@ -6374,7 +6425,8 @@ const PTO_QUESTIONS = [
         10,
         10,
         5
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       "25p",
@@ -6402,7 +6454,8 @@ const PTO_QUESTIONS = [
         2,
         2,
         2
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       "6p",
@@ -6429,7 +6482,8 @@ const PTO_QUESTIONS = [
       "values": [
         20,
         10
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       "30p",
@@ -6457,7 +6511,8 @@ const PTO_QUESTIONS = [
         5,
         5,
         5
-      ]
+      ],
+      "scattered": true
     },
     "options": [
       "15p",
@@ -6479,7 +6534,16 @@ const PTO_QUESTIONS = [
     "type": "Recall",
     "teacherNote": null,
     "text": "Which is the largest amount of money?",
-    "illustration": null,
+    "illustration": {
+      "type": "coins",
+      "values": [
+        5,
+        10,
+        2,
+        20
+      ],
+      "scattered": true
+    },
     "options": [
       "20p",
       "5p",
@@ -6500,7 +6564,16 @@ const PTO_QUESTIONS = [
     "type": "Recall",
     "teacherNote": null,
     "text": "Which is the largest amount of money?",
-    "illustration": null,
+    "illustration": {
+      "type": "coins",
+      "values": [
+        1,
+        2,
+        5,
+        10
+      ],
+      "scattered": true
+    },
     "options": [
       "10p",
       "1p",
@@ -6521,7 +6594,16 @@ const PTO_QUESTIONS = [
     "type": "Recall",
     "teacherNote": null,
     "text": "Which is the largest amount of money?",
-    "illustration": null,
+    "illustration": {
+      "type": "coins",
+      "values": [
+        20,
+        50,
+        10,
+        5
+      ],
+      "scattered": true
+    },
     "options": [
       "50p",
       "20p",
@@ -6542,7 +6624,16 @@ const PTO_QUESTIONS = [
     "type": "Recall",
     "teacherNote": null,
     "text": "Which is the largest amount of money?",
-    "illustration": null,
+    "illustration": {
+      "type": "coins",
+      "values": [
+        2,
+        5,
+        1,
+        10
+      ],
+      "scattered": true
+    },
     "options": [
       "10p",
       "2p",
@@ -6563,7 +6654,16 @@ const PTO_QUESTIONS = [
     "type": "Recall",
     "teacherNote": null,
     "text": "Which is the largest amount of money?",
-    "illustration": null,
+    "illustration": {
+      "type": "coins",
+      "values": [
+        10,
+        20,
+        5,
+        2
+      ],
+      "scattered": true
+    },
     "options": [
       "20p",
       "10p",
