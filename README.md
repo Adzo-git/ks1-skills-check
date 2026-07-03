@@ -1,4 +1,4 @@
-# KS1 Maths Skills Check (Version 1.0 Release Candidate 2)
+# KS1 Maths Skills Check (Version 1.1)
 
 A short, friendly Key Stage 1 maths check for **Primary Tutor Online**. A parent
 sets it up, the child answers **37 questions** one screen at a time, and the parent
@@ -172,9 +172,39 @@ templates. This is only an authoring convenience — the website itself never ru
 **Curriculum balance** is set by `STRAND_QUOTA` near the top of the selection logic
 in `app.js` (it must total `ASSESSMENT_LENGTH`, currently 37). **Illustrations** use
 the built-in types: `dots`, `array`, `coins`, `shape` (circle, square, rectangle,
-triangle, pentagon, hexagon), `clock` (o'clock and half past), `fraction`, `bars`
-and `pictogram`.
+triangle, pentagon, hexagon), `clock` (o'clock and half past), `fraction` (bar,
+tall-column, or pie/pizza), `bars`, `pictogram`, `tally`, `base10` (Dienes-style
+tens rods and ones cubes), `numberline`, `turns` (a quarter-turn reference circle)
+and `arrow` (a single directional arrow).
+
+## Illustrations (Version 1.1)
+
+194 of the 360 questions (54%) now carry an illustration, up from 103 (29%) in
+v1.0. Every addition follows one rule: **if a picture doesn't genuinely aid
+understanding of that specific question, it doesn't get one.** A few examples of
+questions left as text on purpose: comparing "a car" and "a shoe" by weight (crude
+SVG icons of a car and a shoe would look like decoration, not a real comparison);
+matching an object's name to a shape category (`GEO-REAL2D`/`GEO-3D` — needs real
+photos to be honest, not abstract SVG shapes); ordinal-position vocabulary
+(`POS-ORD` — the words themselves are the thing being tested).
+
+Two things worth knowing if you're reviewing illustration quality:
+
+- **The number line never labels the answer.** For "what is one more than 5?" the
+  line shows ticks and numbers either side, but the tick at the answer position is
+  left blank with just a "?" — otherwise the answer would be printed right on the
+  page. (Checked against all 23 number-line questions in the bank — zero leaks.)
+- **The quarter-turns diagram is a fixed reference, not the answer.** Every
+  `POS-TURN` question shows the same "this is what one quarter turn looks like"
+  image rather than shading in the number of quarters that happens to be correct
+  for that question — otherwise a child could just count shaded segments instead
+  of reasoning about turns.
+
+Nothing about the assessment engine, scoring, Supabase schema, quotas, or
+assessment length changed to support this — illustrations are purely a `q.illustration`
+field read by `renderIllustration()` in `app.js` and never touch the saved
+`responses` data.
 
 ---
 
-Primary Tutor Online · KS1 Maths Skills Check · v1.0-rc2
+Primary Tutor Online · KS1 Maths Skills Check · v1.1

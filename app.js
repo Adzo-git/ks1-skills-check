@@ -60,9 +60,14 @@ function renderIllustration(ill) {
   if (ill.type === "coins") return svgCoins(ill.values);
   if (ill.type === "shape") return svgShape(ill.shape);
   if (ill.type === "clock") return svgClock(ill.hour, ill.minute || 0);
-  if (ill.type === "fraction") return svgFraction(ill.parts, ill.shaded, ill.tall);
+  if (ill.type === "fraction") return svgFraction(ill.parts, ill.shaded, ill.tall, ill.shape);
   if (ill.type === "bars") return svgBars(ill.bars);
   if (ill.type === "pictogram") return svgPictogram(ill.rows);
+  if (ill.type === "tally") return svgTally(ill.rows);
+  if (ill.type === "base10") return svgBase10(ill.tens, ill.ones);
+  if (ill.type === "numberline") return svgNumberline(ill.start, ill.end, ill.highlight, ill.question);
+  if (ill.type === "turns") return svgTurns(ill.quarters);
+  if (ill.type === "arrow") return svgArrow(ill.direction);
   return "";
 }
 
@@ -167,8 +172,23 @@ function svgClock(hour, minute) {
 }
 
 // Fraction: a shape split into equal parts, with some parts shaded.
-function svgFraction(parts, shaded, tall) {
+// shape: "pie" draws a circle divided into sectors (pizza-style) for variety;
+// otherwise a rectangle strip, tall (columns) or wide (rows).
+function svgFraction(parts, shaded, tall, shape) {
   const fill = "#652da0", empty = "#fff", stroke = "#652da0", sw = 5;
+  if (shape === "pie") {
+    const cx = 100, cy = 100, R = 88;
+    let cells = "";
+    for (let i = 0; i < parts; i++) {
+      const a0 = (-90 + i * 360 / parts) * Math.PI / 180;
+      const a1 = (-90 + (i + 1) * 360 / parts) * Math.PI / 180;
+      const x0 = cx + R * Math.cos(a0), y0 = cy + R * Math.sin(a0);
+      const x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
+      const large = (360 / parts) > 180 ? 1 : 0;
+      cells += `<path d="M${cx},${cy} L${x0.toFixed(1)},${y0.toFixed(1)} A${R},${R} 0 ${large} 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" fill="${i < shaded ? fill : empty}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round"/>`;
+    }
+    return `<svg viewBox="0 0 200 200" role="img" aria-label="A circle split into equal slices">${cells}</svg>`;
+  }
   let cells = "", W, H;
   if (tall) {
     W = 120; H = 210; const ph = H / parts;
@@ -216,6 +236,134 @@ function svgPictogram(rows) {
     }
   });
   return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="A pictogram">${out}</svg>`;
+}
+
+// Tally chart: an alternative to the pictogram — groups of 5 tally marks
+// (4 uprights + 1 diagonal), one row per category.
+function svgTally(rows) {
+  const pad = 12, labelW = 90, groupW = 46, rowH = 34;
+  const maxGroups = Math.max(...rows.map(r => Math.ceil(r.count / 5)));
+  const w = pad * 2 + labelW + Math.max(1, maxGroups) * groupW;
+  const h = pad * 2 + rows.length * rowH;
+  let out = "";
+  rows.forEach((row, ri) => {
+    const cy = pad + ri * rowH + rowH / 2;
+    out += `<text x="${pad}" y="${cy + 5}" font-size="16" font-weight="600" font-family="Poppins, Arial" fill="#4e2280">${escapeHtml(row.label)}</text>`;
+    let remaining = row.count, gx = pad + labelW;
+    while (remaining > 0) {
+      const inGroup = Math.min(5, remaining);
+      for (let i = 0; i < Math.min(4, inGroup); i++) {
+        const x = gx + 6 + i * 7;
+        out += `<line x1="${x}" y1="${cy - 12}" x2="${x}" y2="${cy + 12}" stroke="#652da0" stroke-width="3" stroke-linecap="round"/>`;
+      }
+      if (inGroup === 5) {
+        out += `<line x1="${gx}" y1="${cy + 12}" x2="${gx + 34}" y2="${cy - 12}" stroke="#e84b8a" stroke-width="3" stroke-linecap="round"/>`;
+      }
+      remaining -= inGroup;
+      gx += groupW;
+    }
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="A tally chart">${out}</svg>`;
+}
+
+// Base 10 (Dienes) blocks: tens rods (each marked into 10 units) and ones
+// cubes, for place value questions. Rods wrap after 5 per row, as do cubes.
+function svgBase10(tens, ones) {
+  const rodW = 20, rodH = 96, unit = 18, gap = 14, pad = 14, perRow = 5;
+  const rodRows = Math.max(1, Math.ceil(tens / perRow));
+  const rodCols = Math.min(Math.max(tens, 1), perRow);
+  const oneRows = Math.max(1, Math.ceil(ones / perRow));
+  const oneCols = Math.min(Math.max(ones, 1), perRow);
+  const rodsW = rodCols * rodW + (rodCols - 1) * gap;
+  const onesW = oneCols * unit + (oneCols - 1) * (gap * 0.5);
+  const w = pad * 2 + Math.max(rodsW, onesW, 60);
+  const rodsH = tens > 0 ? rodRows * rodH + (rodRows - 1) * gap : 0;
+  const onesH = ones > 0 ? oneRows * unit + (oneRows - 1) * (gap * 0.5) : 0;
+  const h = pad * 2 + rodsH + (tens > 0 && ones > 0 ? 16 : 0) + onesH;
+  let out = "";
+  for (let i = 0; i < tens; i++) {
+    const col = i % perRow, row = Math.floor(i / perRow);
+    const x = pad + col * (rodW + gap), y = pad + row * (rodH + gap);
+    out += `<rect x="${x}" y="${y}" width="${rodW}" height="${rodH}" rx="3" fill="#f3edfb" stroke="#652da0" stroke-width="3"/>`;
+    for (let t = 1; t < 10; t++) {
+      const ty = y + (rodH / 10) * t;
+      out += `<line x1="${x}" y1="${ty}" x2="${x + rodW}" y2="${ty}" stroke="#652da0" stroke-width="1.5" opacity="0.6"/>`;
+    }
+  }
+  const onesY = pad + rodsH + (tens > 0 && ones > 0 ? 16 : 0);
+  for (let i = 0; i < ones; i++) {
+    const col = i % perRow, row = Math.floor(i / perRow);
+    const x = pad + col * (unit + gap * 0.5), y = onesY + row * (unit + gap * 0.5);
+    out += `<rect x="${x}" y="${y}" width="${unit}" height="${unit}" rx="2" fill="#e84b8a"/>`;
+  }
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${tens} tens and ${ones} ones shown as blocks">${out}</svg>`;
+}
+
+// Number line: ticks from start to end, filled dots at each value in
+// `highlight`, and an open "?" circle at `question` (the value the child
+// is being asked to find). Used for one-more/one-less and count-on sequences.
+function svgNumberline(start, end, highlight, question) {
+  const step = 44, pad = 24, y = 60;
+  const n = end - start;
+  const w = pad * 2 + n * step, h = 110;
+  const xOf = v => pad + (v - start) * step;
+  let out = `<line x1="${xOf(start)}" y1="${y}" x2="${xOf(end)}" y2="${y}" stroke="#cdbfe4" stroke-width="4" stroke-linecap="round"/>`;
+  for (let v = start; v <= end; v++) {
+    out += `<line x1="${xOf(v)}" y1="${y - 8}" x2="${xOf(v)}" y2="${y + 8}" stroke="#cdbfe4" stroke-width="3"/>`;
+    if (v !== question) {
+      out += `<text x="${xOf(v)}" y="${y + 30}" text-anchor="middle" font-size="16" font-weight="600" font-family="Poppins, Arial" fill="#6c6683">${v}</text>`;
+    }
+  }
+  (highlight || []).forEach(v => {
+    out += `<circle cx="${xOf(v)}" cy="${y}" r="11" fill="#652da0"/>`;
+  });
+  if (question !== undefined && question !== null) {
+    out += `<circle cx="${xOf(question)}" cy="${y}" r="13" fill="#fff" stroke="#e84b8a" stroke-width="3"/>`;
+    out += `<text x="${xOf(question)}" y="${y + 6}" text-anchor="middle" font-size="16" font-weight="700" font-family="Poppins, Arial" fill="#e84b8a">?</text>`;
+  }
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="A number line">${out}</svg>`;
+}
+
+// Turns: a circle divided into quarters, with `quarters` of them shaded
+// clockwise from the top to show the size of a quarter/half/three-quarter turn.
+function svgTurns(quarters) {
+  const cx = 100, cy = 100, R = 82;
+  let out = `<circle cx="${cx}" cy="${cy}" r="${R}" fill="#fff" stroke="#cdbfe4" stroke-width="4"/>`;
+  for (let i = 0; i < quarters; i++) {
+    const a0 = (-90 + i * 90) * Math.PI / 180, a1 = (-90 + (i + 1) * 90) * Math.PI / 180;
+    const x0 = cx + R * Math.cos(a0), y0 = cy + R * Math.sin(a0);
+    const x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
+    out += `<path d="M${cx},${cy} L${x0.toFixed(1)},${y0.toFixed(1)} A${R},${R} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" fill="#f3edfb" stroke="#652da0" stroke-width="3" stroke-linejoin="round"/>`;
+  }
+  out += `<line x1="${cx}" y1="${cy}" x2="${cx}" y2="${cy - R}" stroke="#652da0" stroke-width="5" stroke-linecap="round"/>`;
+  const endA = (-90 + quarters * 90) * Math.PI / 180;
+  const ex = cx + R * Math.cos(endA), ey = cy + R * Math.sin(endA);
+  out += `<line x1="${cx}" y1="${cy}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="#e84b8a" stroke-width="5" stroke-linecap="round"/>`;
+  return `<svg viewBox="0 0 200 200" role="img" aria-label="A circle showing a turn">${out}</svg>`;
+}
+
+// Arrow: a single large directional arrow with a label, for direction words.
+function svgArrow(direction) {
+  const map = {
+    left:  { angle: 180, label: "left" },  right: { angle: 0,   label: "right" },
+    up:    { angle: 270, label: "up" },    down:  { angle: 90,  label: "down" },
+    top:   { angle: 270, label: "top" },   bottom:{ angle: 90,  label: "bottom" },
+    forwards: { angle: 270, label: "forwards" }, backwards: { angle: 90, label: "backwards" }
+  };
+  const d = map[direction] || map.right;
+  const cx = 100, cy = 90, len = 70;
+  const rad = d.angle * Math.PI / 180;
+  const tx = cx + Math.cos(rad) * len, ty = cy + Math.sin(rad) * len;
+  const bx = cx - Math.cos(rad) * len, by = cy - Math.sin(rad) * len;
+  // arrowhead
+  const headA1 = rad + 2.6, headA2 = rad - 2.6;
+  const h1x = tx + Math.cos(headA1) * 18, h1y = ty + Math.sin(headA1) * 18;
+  const h2x = tx + Math.cos(headA2) * 18, h2y = ty + Math.sin(headA2) * 18;
+  return `<svg viewBox="0 0 200 160" role="img" aria-label="An arrow pointing ${d.label}">
+    <line x1="${bx.toFixed(1)}" y1="${by.toFixed(1)}" x2="${tx.toFixed(1)}" y2="${ty.toFixed(1)}" stroke="#652da0" stroke-width="8" stroke-linecap="round"/>
+    <polygon points="${tx.toFixed(1)},${ty.toFixed(1)} ${h1x.toFixed(1)},${h1y.toFixed(1)} ${h2x.toFixed(1)},${h2y.toFixed(1)}" fill="#652da0"/>
+    <text x="100" y="145" text-anchor="middle" font-size="20" font-weight="700" font-family="Poppins, Arial" fill="#4e2280">${d.label}</text>
+  </svg>`;
 }
 
 /* ---------- Setup (Welcome) ---------- */
