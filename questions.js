@@ -65,11 +65,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Foundation",
     "type": "Recall",
     "teacherNote": "Encourage pointing to each object once.",
-    "text": "How many counters can you see?",
+    "text": "How many toy cars can you see?",
     "illustration": {
       "type": "dots",
       "count": 3,
-      "color": "#652da0"
+      "emoji": "🚗",
+      "ariaLabel": "A group of toy cars to count"
     },
     "options": [
       3,
@@ -78,7 +79,7 @@ const PTO_QUESTIONS = [
       5
     ],
     "correctIndex": 0,
-    "explanation": "There are 3 counters. Pointing to each one as you count helps you not miss any.",
+    "explanation": "There are 3 toy cars. Pointing to each one as you count helps you not miss any.",
     "misconception": "Miscounts by skipping or double-counting an object."
   },
   {
@@ -90,11 +91,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Foundation",
     "type": "Recall",
     "teacherNote": "Encourage pointing to each object once.",
-    "text": "How many counters can you see?",
+    "text": "How many buses can you see?",
     "illustration": {
       "type": "dots",
       "count": 4,
-      "color": "#652da0"
+      "emoji": "🚌",
+      "ariaLabel": "A group of buses to count"
     },
     "options": [
       4,
@@ -103,7 +105,7 @@ const PTO_QUESTIONS = [
       6
     ],
     "correctIndex": 0,
-    "explanation": "There are 4 counters. Pointing to each one as you count helps you not miss any.",
+    "explanation": "There are 4 buses. Pointing to each one as you count helps you not miss any.",
     "misconception": "Miscounts by skipping or double-counting an object."
   },
   {
@@ -115,11 +117,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Foundation",
     "type": "Recall",
     "teacherNote": "Encourage pointing to each object once.",
-    "text": "How many counters can you see?",
+    "text": "How many apples can you see?",
     "illustration": {
       "type": "dots",
       "count": 5,
-      "color": "#652da0"
+      "emoji": "🍎",
+      "ariaLabel": "A group of apples to count"
     },
     "options": [
       5,
@@ -128,7 +131,7 @@ const PTO_QUESTIONS = [
       7
     ],
     "correctIndex": 0,
-    "explanation": "There are 5 counters. Pointing to each one as you count helps you not miss any.",
+    "explanation": "There are 5 apples. Pointing to each one as you count helps you not miss any.",
     "misconception": "Miscounts by skipping or double-counting an object."
   },
   {
@@ -140,11 +143,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Foundation",
     "type": "Recall",
     "teacherNote": "Encourage pointing to each object once.",
-    "text": "How many counters can you see?",
+    "text": "How many pencils can you see?",
     "illustration": {
       "type": "dots",
       "count": 6,
-      "color": "#652da0"
+      "emoji": "✏️",
+      "ariaLabel": "A group of pencils to count"
     },
     "options": [
       6,
@@ -153,7 +157,7 @@ const PTO_QUESTIONS = [
       8
     ],
     "correctIndex": 0,
-    "explanation": "There are 6 counters. Pointing to each one as you count helps you not miss any.",
+    "explanation": "There are 6 pencils. Pointing to each one as you count helps you not miss any.",
     "misconception": "Miscounts by skipping or double-counting an object."
   },
   {
@@ -165,11 +169,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Foundation",
     "type": "Recall",
     "teacherNote": "Encourage pointing to each object once.",
-    "text": "How many counters can you see?",
+    "text": "How many books can you see?",
     "illustration": {
       "type": "dots",
       "count": 7,
-      "color": "#652da0"
+      "emoji": "📚",
+      "ariaLabel": "A group of books to count"
     },
     "options": [
       7,
@@ -178,7 +183,7 @@ const PTO_QUESTIONS = [
       9
     ],
     "correctIndex": 0,
-    "explanation": "There are 7 counters. Pointing to each one as you count helps you not miss any.",
+    "explanation": "There are 7 books. Pointing to each one as you count helps you not miss any.",
     "misconception": "Miscounts by skipping or double-counting an object."
   },
   {
@@ -190,11 +195,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Foundation",
     "type": "Recall",
     "teacherNote": "Encourage pointing to each object once.",
-    "text": "How many counters can you see?",
+    "text": "How many flowers can you see?",
     "illustration": {
       "type": "dots",
       "count": 8,
-      "color": "#652da0"
+      "emoji": "🌸",
+      "ariaLabel": "A group of flowers to count"
     },
     "options": [
       8,
@@ -203,7 +209,7 @@ const PTO_QUESTIONS = [
       10
     ],
     "correctIndex": 0,
-    "explanation": "There are 8 counters. Pointing to each one as you count helps you not miss any.",
+    "explanation": "There are 8 flowers. Pointing to each one as you count helps you not miss any.",
     "misconception": "Miscounts by skipping or double-counting an object."
   },
   {
@@ -215,11 +221,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Foundation",
     "type": "Recall",
     "teacherNote": "Encourage pointing to each object once.",
-    "text": "How many counters can you see?",
+    "text": "How many footballs can you see?",
     "illustration": {
       "type": "dots",
       "count": 9,
-      "color": "#652da0"
+      "emoji": "⚽",
+      "ariaLabel": "A group of footballs to count"
     },
     "options": [
       9,
@@ -228,7 +235,7 @@ const PTO_QUESTIONS = [
       11
     ],
     "correctIndex": 0,
-    "explanation": "There are 9 counters. Pointing to each one as you count helps you not miss any.",
+    "explanation": "There are 9 footballs. Pointing to each one as you count helps you not miss any.",
     "misconception": "Miscounts by skipping or double-counting an object."
   },
   {
@@ -240,11 +247,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Foundation",
     "type": "Recall",
     "teacherNote": "Encourage pointing to each object once.",
-    "text": "How many counters can you see?",
+    "text": "How many sweets can you see?",
     "illustration": {
       "type": "dots",
       "count": 10,
-      "color": "#652da0"
+      "emoji": "🍬",
+      "ariaLabel": "A group of sweets to count"
     },
     "options": [
       10,
@@ -253,7 +261,7 @@ const PTO_QUESTIONS = [
       12
     ],
     "correctIndex": 0,
-    "explanation": "There are 10 counters. Pointing to each one as you count helps you not miss any.",
+    "explanation": "There are 10 sweets. Pointing to each one as you count helps you not miss any.",
     "misconception": "Miscounts by skipping or double-counting an object."
   },
   {
@@ -265,11 +273,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Foundation",
     "type": "Recall",
     "teacherNote": "Encourage pointing to each object once.",
-    "text": "How many counters can you see?",
+    "text": "How many toy cars can you see?",
     "illustration": {
       "type": "dots",
       "count": 12,
-      "color": "#652da0"
+      "emoji": "🚗",
+      "ariaLabel": "A group of toy cars to count"
     },
     "options": [
       12,
@@ -278,7 +287,7 @@ const PTO_QUESTIONS = [
       14
     ],
     "correctIndex": 0,
-    "explanation": "There are 12 counters. Pointing to each one as you count helps you not miss any.",
+    "explanation": "There are 12 toy cars. Pointing to each one as you count helps you not miss any.",
     "misconception": "Miscounts by skipping or double-counting an object."
   },
   {
@@ -290,11 +299,12 @@ const PTO_QUESTIONS = [
     "difficulty": "Foundation",
     "type": "Recall",
     "teacherNote": "Encourage pointing to each object once.",
-    "text": "How many counters can you see?",
+    "text": "How many buses can you see?",
     "illustration": {
       "type": "dots",
       "count": 14,
-      "color": "#652da0"
+      "emoji": "🚌",
+      "ariaLabel": "A group of buses to count"
     },
     "options": [
       14,
@@ -303,7 +313,7 @@ const PTO_QUESTIONS = [
       16
     ],
     "correctIndex": 0,
-    "explanation": "There are 14 counters. Pointing to each one as you count helps you not miss any.",
+    "explanation": "There are 14 buses. Pointing to each one as you count helps you not miss any.",
     "misconception": "Miscounts by skipping or double-counting an object."
   },
   {
@@ -1959,7 +1969,8 @@ const PTO_QUESTIONS = [
     "illustration": {
       "type": "base10",
       "tens": 2,
-      "ones": 4
+      "ones": 4,
+      "ariaLabel": "Place value blocks for the number 24"
     },
     "options": [
       2,
@@ -1984,7 +1995,8 @@ const PTO_QUESTIONS = [
     "illustration": {
       "type": "base10",
       "tens": 3,
-      "ones": 7
+      "ones": 7,
+      "ariaLabel": "Place value blocks for the number 37"
     },
     "options": [
       3,
@@ -2009,7 +2021,8 @@ const PTO_QUESTIONS = [
     "illustration": {
       "type": "base10",
       "tens": 4,
-      "ones": 5
+      "ones": 5,
+      "ariaLabel": "Place value blocks for the number 45"
     },
     "options": [
       4,
@@ -2034,7 +2047,8 @@ const PTO_QUESTIONS = [
     "illustration": {
       "type": "base10",
       "tens": 5,
-      "ones": 3
+      "ones": 3,
+      "ariaLabel": "Place value blocks for the number 53"
     },
     "options": [
       5,
@@ -2059,7 +2073,8 @@ const PTO_QUESTIONS = [
     "illustration": {
       "type": "base10",
       "tens": 6,
-      "ones": 8
+      "ones": 8,
+      "ariaLabel": "Place value blocks for the number 68"
     },
     "options": [
       6,
@@ -2084,7 +2099,8 @@ const PTO_QUESTIONS = [
     "illustration": {
       "type": "base10",
       "tens": 7,
-      "ones": 2
+      "ones": 2,
+      "ariaLabel": "Place value blocks for the number 72"
     },
     "options": [
       7,
@@ -2109,7 +2125,8 @@ const PTO_QUESTIONS = [
     "illustration": {
       "type": "base10",
       "tens": 8,
-      "ones": 6
+      "ones": 6,
+      "ariaLabel": "Place value blocks for the number 86"
     },
     "options": [
       8,
@@ -2134,7 +2151,8 @@ const PTO_QUESTIONS = [
     "illustration": {
       "type": "base10",
       "tens": 9,
-      "ones": 1
+      "ones": 1,
+      "ariaLabel": "Place value blocks for the number 91"
     },
     "options": [
       9,
@@ -3881,7 +3899,19 @@ const PTO_QUESTIONS = [
     "type": "Application",
     "teacherNote": null,
     "text": "There are 4 red apples and 5 green apples. How many altogether?",
-    "illustration": null,
+    "illustration": {
+      "type": "emojigroups",
+      "groups": [
+        {
+          "emoji": "🍎",
+          "count": 4
+        },
+        {
+          "emoji": "🍏",
+          "count": 5
+        }
+      ]
+    },
     "options": [
       9,
       8,
@@ -3902,7 +3932,19 @@ const PTO_QUESTIONS = [
     "type": "Application",
     "teacherNote": null,
     "text": "There are 6 red apples and 3 green apples. How many altogether?",
-    "illustration": null,
+    "illustration": {
+      "type": "emojigroups",
+      "groups": [
+        {
+          "emoji": "🍎",
+          "count": 6
+        },
+        {
+          "emoji": "🍏",
+          "count": 3
+        }
+      ]
+    },
     "options": [
       9,
       8,
@@ -3923,7 +3965,19 @@ const PTO_QUESTIONS = [
     "type": "Application",
     "teacherNote": null,
     "text": "There are 7 red apples and 8 green apples. How many altogether?",
-    "illustration": null,
+    "illustration": {
+      "type": "emojigroups",
+      "groups": [
+        {
+          "emoji": "🍎",
+          "count": 7
+        },
+        {
+          "emoji": "🍏",
+          "count": 8
+        }
+      ]
+    },
     "options": [
       15,
       14,
@@ -3944,7 +3998,19 @@ const PTO_QUESTIONS = [
     "type": "Application",
     "teacherNote": null,
     "text": "There are 5 red apples and 9 green apples. How many altogether?",
-    "illustration": null,
+    "illustration": {
+      "type": "emojigroups",
+      "groups": [
+        {
+          "emoji": "🍎",
+          "count": 5
+        },
+        {
+          "emoji": "🍏",
+          "count": 9
+        }
+      ]
+    },
     "options": [
       14,
       13,
@@ -3965,7 +4031,19 @@ const PTO_QUESTIONS = [
     "type": "Application",
     "teacherNote": null,
     "text": "There are 3 red apples and 6 green apples. How many altogether?",
-    "illustration": null,
+    "illustration": {
+      "type": "emojigroups",
+      "groups": [
+        {
+          "emoji": "🍎",
+          "count": 3
+        },
+        {
+          "emoji": "🍏",
+          "count": 6
+        }
+      ]
+    },
     "options": [
       9,
       8,
@@ -3986,7 +4064,11 @@ const PTO_QUESTIONS = [
     "type": "Application",
     "teacherNote": null,
     "text": "There are 8 cakes. 3 are eaten. How many are left?",
-    "illustration": null,
+    "illustration": {
+      "type": "dots",
+      "count": 8,
+      "emoji": "🍰"
+    },
     "options": [
       5,
       4,
@@ -4007,7 +4089,11 @@ const PTO_QUESTIONS = [
     "type": "Application",
     "teacherNote": null,
     "text": "There are 10 cakes. 4 are eaten. How many are left?",
-    "illustration": null,
+    "illustration": {
+      "type": "dots",
+      "count": 10,
+      "emoji": "🍰"
+    },
     "options": [
       6,
       5,
@@ -4028,7 +4114,11 @@ const PTO_QUESTIONS = [
     "type": "Application",
     "teacherNote": null,
     "text": "There are 9 cakes. 5 are eaten. How many are left?",
-    "illustration": null,
+    "illustration": {
+      "type": "dots",
+      "count": 9,
+      "emoji": "🍰"
+    },
     "options": [
       4,
       3,
@@ -4049,7 +4139,11 @@ const PTO_QUESTIONS = [
     "type": "Application",
     "teacherNote": null,
     "text": "There are 7 cakes. 2 are eaten. How many are left?",
-    "illustration": null,
+    "illustration": {
+      "type": "dots",
+      "count": 7,
+      "emoji": "🍰"
+    },
     "options": [
       5,
       4,
@@ -4070,7 +4164,11 @@ const PTO_QUESTIONS = [
     "type": "Application",
     "teacherNote": null,
     "text": "There are 12 cakes. 5 are eaten. How many are left?",
-    "illustration": null,
+    "illustration": {
+      "type": "dots",
+      "count": 12,
+      "emoji": "🍰"
+    },
     "options": [
       7,
       6,

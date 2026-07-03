@@ -22,6 +22,7 @@ const state = {
   questionsCompletedAt: null, // timestamp when the LAST MATHS QUESTION was answered
                               // (captured separately so duration excludes the two short survey screens)
   lastTip: null, // the previous Maths Tip shown, so we can avoid an immediate repeat
+  lastEncouragement: null, // the previous encouragement message shown, to avoid an immediate repeat
   saving: false,    // true while a save is in flight
   saved: false      // true once a result has been stored (prevents duplicates)
 };
@@ -297,11 +298,45 @@ function pickMathsTip(strand) {
   return choice;
 }
 
+/* ---------- Strand colours & encouragement (PTO Design System v1.0) ----------
+   Strand colours are a small accent only — the tip's icon and text label
+   always carry the real information, so nothing depends on colour alone.
+   Encouragement is shown sparingly (every 6th question, never on the last
+   question) rather than on every screen, so it stays meaningful. */
+const STRAND_COLORS = {
+  NPV: "#2E6FE0", AS: "#2E9E5B", MD: "#E0653A", FRA: "#E0972E",
+  GEO: "#8B5CF6", MEA: "#1FA3A3", POS: "#4B4FE0", STA: "#E0498A"
+};
+
+const ENCOURAGEMENTS = [
+  "Keep going.", "You're making good progress.", "Take your time.",
+  "Nearly there.", "One question at a time.", "Keep thinking.",
+  "Every question helps us learn."
+];
+
+function pickEncouragement() {
+  let choice = ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
+  if (ENCOURAGEMENTS.length > 1) {
+    let attempts = 0;
+    while (choice === state.lastEncouragement && attempts < 8) {
+      choice = ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
+      attempts++;
+    }
+  }
+  state.lastEncouragement = choice;
+  return choice;
+}
+
 /* ---------- Illustration renderer ----------
    Small, static SVGs. Used only where a picture aids understanding. */
 function renderIllustration(ill) {
   if (!ill) return "";
-  if (ill.type === "dots") return svgDots(ill.count, ill.color || "#652da0");
+  if (ill.type === "dots") return svgDots(ill.count, ill.color || "#652da0", ill.emoji, ill.ariaLabel);
+  if (ill.type === "emojigroups") {
+    const glyphs = (ill.groups || []).flatMap(g => Array(g.count).fill(g.emoji));
+    const label = (ill.groups || []).map(g => `${g.count} of one kind`).join(" and ");
+    return svgEmojiGrid(glyphs, label);
+  }
   if (ill.type === "array") return svgArray(ill.rows, ill.cols, ill.color || "#652da0");
   if (ill.type === "coins") return svgCoins(ill.values);
   if (ill.type === "shape") return svgShape(ill.shape);
@@ -310,31 +345,57 @@ function renderIllustration(ill) {
   if (ill.type === "bars") return svgBars(ill.bars);
   if (ill.type === "pictogram") return svgPictogram(ill.rows);
   if (ill.type === "tally") return svgTally(ill.rows);
-  if (ill.type === "base10") return svgBase10(ill.tens, ill.ones);
+  if (ill.type === "base10") return svgBase10(ill.tens, ill.ones, ill.ariaLabel);
   if (ill.type === "numberline") return svgNumberline(ill.start, ill.end, ill.highlight, ill.question);
   if (ill.type === "turns") return svgTurns(ill.quarters);
   if (ill.type === "arrow") return svgArrow(ill.direction);
   return "";
 }
 
-function svgDots(n, color) {
+function svgDots(n, color, emoji, ariaLabel) {
   const perRow = 5, r = 20, gap = 20, pad = 16;
   const rows = Math.ceil(n / perRow);
   const cols = Math.min(n, perRow);
   const w = pad * 2 + cols * (r * 2) + (cols - 1) * gap;
   const h = pad * 2 + rows * (r * 2) + (rows - 1) * gap;
-  let circles = "";
+  let marks = "";
   for (let i = 0; i < n; i++) {
     const row = Math.floor(i / perRow);
     const col = i % perRow;
     const cx = pad + r + col * (r * 2 + gap);
     const cy = pad + r + row * (r * 2 + gap);
-    circles += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}"/>`;
+    marks += emoji
+      ? `<text x="${cx}" y="${cy + r * 0.65}" text-anchor="middle" font-size="${r * 1.7}">${emoji}</text>`
+      : `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}"/>`;
   }
-  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${n} objects">${circles}</svg>`;
+  // Default aria-label states the count — safe for most dot illustrations,
+  // where the count shown is a GIVEN quantity, not the answer (e.g. "half
+  // of these 8 counters" — 8 is given, the answer is 4). Questions where the
+  // count IS the answer (e.g. "how many can you see?") must pass an
+  // ariaLabel override so the answer is never spoken aloud.
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${ariaLabel || (n + " objects")}">${marks}</svg>`;
 }
 
 // Array: rows x cols grid of dots (for equal groups / multiplication).
+// A flat wrapped grid of emoji glyphs, one per cell — used to show two named
+// groups (e.g. red apples + green apples) side by side without revealing a total.
+function svgEmojiGrid(glyphs, ariaLabel) {
+  const perRow = 5, r = 20, gap = 20, pad = 16;
+  const n = glyphs.length;
+  const rows = Math.ceil(n / perRow), cols = Math.min(n, perRow);
+  const w = pad * 2 + cols * (r * 2) + (cols - 1) * gap;
+  const h = pad * 2 + rows * (r * 2) + (rows - 1) * gap;
+  let marks = "";
+  glyphs.forEach((g, i) => {
+    const row = Math.floor(i / perRow), col = i % perRow;
+    const cx = pad + r + col * (r * 2 + gap), cy = pad + r + row * (r * 2 + gap);
+    marks += `<text x="${cx}" y="${cy + r * 0.65}" text-anchor="middle" font-size="${r * 1.7}">${g}</text>`;
+  });
+  // aria-label deliberately never states the combined count — for a "how many
+  // altogether" question that total IS the answer, so it must never be spoken.
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${ariaLabel || "A group of objects"}">${marks}</svg>`;
+}
+
 function svgArray(rows, cols, color) {
   const r = 16, gap = 18, pad = 16;
   const w = pad * 2 + cols * (r * 2) + (cols - 1) * gap;
@@ -514,7 +575,7 @@ function svgTally(rows) {
 
 // Base 10 (Dienes) blocks: tens rods (each marked into 10 units) and ones
 // cubes, for place value questions. Rods wrap after 5 per row, as do cubes.
-function svgBase10(tens, ones) {
+function svgBase10(tens, ones, ariaLabel) {
   const rodW = 20, rodH = 96, unit = 18, gap = 14, pad = 14, perRow = 5;
   const rodRows = Math.max(1, Math.ceil(tens / perRow));
   const rodCols = Math.min(Math.max(tens, 1), perRow);
@@ -542,7 +603,11 @@ function svgBase10(tens, ones) {
     const x = pad + col * (unit + gap * 0.5), y = onesY + row * (unit + gap * 0.5);
     out += `<rect x="${x}" y="${y}" width="${unit}" height="${unit}" rx="2" fill="#e84b8a"/>`;
   }
-  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${tens} tens and ${ones} ones shown as blocks">${out}</svg>`;
+  // Default aria-label restates the GIVEN tens/ones — safe for TENMORE,
+  // TENLESS and BUILD, where the answer is a different number. Questions
+  // that directly ask "how many tens?" must pass an override so the tens
+  // count is never spoken as part of the label.
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${ariaLabel || (tens + " tens and " + ones + " ones shown as blocks")}">${out}</svg>`;
 }
 
 // Number line: ticks from start to end, filled dots at each value in
@@ -722,6 +787,7 @@ function renderQuestion() {
 
   $("progress-count").textContent = `Question ${num} of ${total}`;
   $("progress-fill").style.width = `${(num / total) * 100}%`;
+  $("encourage-text").textContent = (num % 6 === 0 && num < total) ? pickEncouragement() : "";
 
   $("q-illus").innerHTML = renderIllustration(q.illustration);
   $("q-text").textContent = q.text;
@@ -730,6 +796,7 @@ function renderQuestion() {
   $("tip-icon").textContent = meta.icon;
   $("tip-label").textContent = meta.label;
   $("tip-text").textContent = tip.text;
+  $("tip-box").style.borderLeftColor = STRAND_COLORS[q.strand] || STRAND_COLORS.NPV;
 
   const wrap = $("answers");
   wrap.innerHTML = "";

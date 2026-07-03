@@ -1,4 +1,4 @@
-# KS1 Maths Skills Check (Version 1.4)
+# KS1 Maths Skills Check (Version 1.6)
 
 A short, friendly Key Stage 1 maths check for **Primary Tutor Online**. A parent
 sets it up, the child answers **37 questions** one screen at a time, and the parent
@@ -243,6 +243,85 @@ now dynamic instead of fixed to "💡 Maths Tip". Nothing in the assessment
 engine, scoring, question selection, reporting, illustrations, or Supabase
 was touched.
 
+## PTO Assessment Design System (Version 1.5)
+
+This release begins establishing a shared visual identity across future PTO
+assessments — see **`DESIGN_SYSTEM.md`** for the full specification (strand
+colours, KS1–KS4 progressive philosophy, illustration/tip/encouragement
+principles). What actually shipped in the live assessment this round:
+
+1. **Strand colour accent.** The Maths Tip box now shows a thin left-edge
+   stripe in the current question's strand colour (8 colours, one per
+   strand — see `STRAND_COLORS` in `app.js`). Colour is always paired with
+   the tip's icon and text, never the only signal.
+2. **Sparing encouragement.** A small rotating message ("Keep going.",
+   "Nearly there.", etc.) appears every 6th question — never on every
+   screen, and never on the final question. Verified: exactly 6 of 37
+   questions in a simulated sitting.
+3. **Emoji-capable illustrations, proven on two real questions.** The dot
+   illustration renderer now accepts an optional emoji glyph, and a new
+   `emojigroups` type shows two named groups side by side. Applied to the
+   "red apples and green apples" addition question (🍎🍏) and the "cakes
+   eaten" subtraction question (🍰) — the two questions in the bank where
+   the emoji genuinely matches the question's own wording.
+
+**A real bug caught during this work:** the first version of the
+`emojigroups` illustration set its `aria-label` to the total number of
+objects shown — which, for a "how many altogether?" question, is the
+correct answer. A screen reader would have spoken the answer aloud. Fixed
+to describe the groups by their given counts instead (already stated in
+the question text) and never the combined total; verified against all 5
+`emojigroups` questions in the bank with zero leaks.
+
+**Deliberately not done this round** (see `DESIGN_SYSTEM.md` for the
+reasoning on each): a full sweep replacing every dot illustration with
+themed emoji across all 360 questions (needs a content-matching review per
+question, not a mechanical change); illustrated character companions (no
+character artwork exists — faking it with primitives would look exactly
+like the "clip-art, mismatched styles" this system explicitly rejects); a
+deeper pass sharpening the ~185 Maths Tips to be more concept-specific
+per strand; KS2–KS4 or other-subject assessments (don't exist as products).
+
+## Illustration concreteness pass (Version 1.6)
+
+Reviewed the full 360-question bank against one rule: **concrete objects for
+real-world contexts, mathematical models for mathematical concepts.**
+
+**Finding:** almost none of the bank actually needed changing. Systematically
+checked every question's text for named real-world objects (cars, buses,
+apples, cakes, pencils, books, flowers) — only 2 existed (already fixed in
+v1.5: 🍎🍏 and 🍰). Every other illustrated question either says "counters" (a
+legitimate KS1 maths manipulative, correctly left as a mathematical model —
+not a decoration problem) or names no object at all (abstract number
+questions like "double 5"). Fractions, geometry, arrays, and statistics were
+already using the appropriate mathematical models (bars/pies, shapes,
+arrays, pictograms) and were left untouched.
+
+**The one real change:** `NPV-COUNT` ("How many counters can you see?" ×10)
+was the single closest match to the brief's own worked example (cars) — a
+foundational counting skill shown as plain purple dots. It now rotates
+through real KS1-friendly objects with matching emoji (toy cars 🚗, buses 🚌,
+apples 🍎, pencils ✏️, books 📚, flowers 🌸, footballs ⚽, sweets 🍬).
+
+**A real, pre-existing accessibility bug found and fixed during the review:**
+a systematic sweep of every illustrated question's `aria-label` against its
+correct answer (word-boundary matching, not naive substring, to avoid false
+positives) found that all 10 `NPV-COUNT` questions had an aria-label stating
+the exact dot count — which **is** the correct answer for "how many can you
+see?" A screen-reader user would have heard the answer spoken aloud. This
+predates this session; the systematic check required by this task is what
+caught it. Also found: `NPV-TENS`'s base-10 block illustration stated "`{n}`
+tens and `{n}` ones" as its label — safe for `TENMORE`/`TENLESS`/`BUILD`
+(restates the *given* number), but a real leak for `NPV-TENS` specifically,
+since that question asks "how many tens?" Both fixed with a per-question
+`ariaLabel` override (`svgDots`/`svgBase10` now accept one), verified with a
+full sweep across all 204 illustrated questions: **zero remaining leaks.**
+
+Only `app.js`, `questions.js`, and `tools/generate-questions.js` changed —
+`index.html` and `styles.css` are byte-identical to v1.5. The full regression
+suite (37 questions, correct quotas, 2,000 unique selections, encouragement
+frequency, report generation, Supabase row shape) passes unchanged.
+
 ---
 
-Primary Tutor Online · KS1 Maths Skills Check · v1.4
+Primary Tutor Online · KS1 Maths Skills Check · v1.6
