@@ -21,6 +21,7 @@ const state = {
   independence: null,   // parent's rating: independent / a_little_help / a_lot_of_help
   questionsCompletedAt: null, // timestamp when the LAST MATHS QUESTION was answered
                               // (captured separately so duration excludes the two short survey screens)
+  lastReminder: null, // the previous Helpful Reminder shown, so we can avoid an immediate repeat
   saving: false,    // true while a save is in flight
   saved: false      // true once a result has been stored (prevents duplicates)
 };
@@ -50,6 +51,51 @@ function shuffled(arr) {
 }
 
 const TICK = '<svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* ---------- Helpful Reminders (Version 1.1) ----------
+   Gentle, encouraging notes shown below every question — never a hint,
+   never method-specific to the question on screen, just good habits and
+   confidence. One is picked at random per question (never the same one
+   twice in a row where the pool allows it) from general + strand pools.
+   None of these reference a number, shape, or fact from any specific
+   question, so they can never reveal or narrow down an answer. */
+const GENERAL_REMINDERS = [
+  "Take your time. There is no rush.",
+  "Read the question carefully before choosing.",
+  "If you're unsure, make your best choice.",
+  "Everyone makes mistakes while learning.",
+  "Think about what the question is asking.",
+  "You can always check your answer before moving on.",
+  "Every question is a chance to learn something new.",
+  "Do your best — that's all anyone can ask."
+];
+const STRAND_REMINDERS = {
+  NPV: ["Counting carefully often helps.", "Numbers always have an order.",
+        "A number line can help you imagine where numbers belong."],
+  AS:  ["Work one step at a time.", "Counting carefully can help check your thinking.",
+        "Adding means putting together. Subtracting means taking away or finding the difference."],
+  MD:  ["Look for equal groups.", "Counting in groups can make things easier."],
+  FRA: ["Equal parts are always the same size.", "Look carefully at how the whole has been divided."],
+  GEO: ["Count the sides and corners carefully.", "Look closely at the shape before choosing."],
+  MEA: ["Think about what is being measured.", "Compare carefully before deciding."],
+  POS: ["Imagine standing where the picture is facing.", "Think about the direction before choosing."],
+  STA: ["Look carefully at all of the information.", "Check every row or picture before deciding."]
+};
+
+function pickReminder(strand) {
+  const pool = GENERAL_REMINDERS.concat(STRAND_REMINDERS[strand] || []);
+  let choice = pool[Math.floor(Math.random() * pool.length)];
+  // Avoid showing the exact same reminder twice in a row when there's a choice.
+  if (pool.length > 1) {
+    let attempts = 0;
+    while (choice === state.lastReminder && attempts < 8) {
+      choice = pool[Math.floor(Math.random() * pool.length)];
+      attempts++;
+    }
+  }
+  state.lastReminder = choice;
+  return choice;
+}
 
 /* ---------- Illustration renderer ----------
    Small, static SVGs. Used only where a picture aids understanding. */
@@ -479,6 +525,7 @@ function renderQuestion() {
 
   $("q-illus").innerHTML = renderIllustration(q.illustration);
   $("q-text").textContent = q.text;
+  $("reminder-text").textContent = pickReminder(q.strand);
 
   const wrap = $("answers");
   wrap.innerHTML = "";
