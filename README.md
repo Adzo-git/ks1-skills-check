@@ -1,503 +1,96 @@
-# KS1 Maths Skills Check (Version 1.9)
-
-A short, friendly Key Stage 1 maths check for **Primary Tutor Online**. A parent
-sets it up, the child answers **37 questions** one screen at a time, and the parent
-gets a simple **strengths and next-steps report**. Results are saved to Supabase.
-
-The 37 questions are chosen at random from a bank of **360 curriculum-mapped
-questions** with balanced coverage of every KS1 maths strand, so repeat sittings
-feel fresh while staying fair and representative.
-
-Built to the PTO Standards: curriculum-led, child-first, calm, and honest.
-Plain HTML/CSS/JavaScript — no build step, no framework, minimal maintenance.
-
----
-
-## What's in the box
-
-| File | What it is |
-|------|------------|
-| `index.html` | The whole app (all screens) |
-| `styles.css` | PTO design system (purple/white/pink, Poppins, calm, accessible) |
-| `questions.js` | The 360-question bank + strand definitions — **edit this to change questions** |
-| `app.js` | Flow, question selection, rendering, report generation, saving |
-| `config.js` | **The one file you edit to go live** (Supabase details) |
-| `supabase-setup.sql` | Run once in Supabase to create the results table |
-| `tools/generate-questions.js` | *Optional.* The offline authoring script used to build `questions.js` in bulk. **Not part of the website** — only needed (with Node) if you want to regenerate the bank. |
-| `README.md` | This file |
-
----
-
-## Try it first (no setup needed)
-
-1. Open `config.js` and leave `SAVE_RESULTS: true` but keep the placeholder keys,
-   **or** set `SAVE_RESULTS: false`.
-2. Open `index.html` in a browser.
-3. Walk through the whole check. You'll see the full report; it just won't be saved
-   (a small note says "Preview mode"). This is the quickest way to review the
-   questions and report before going live.
-
----
-
-## Going live — two short jobs
-
-### 1. Set up Supabase (stores the results)
-
-1. Create a free account at **https://supabase.com** and make a new project.
-2. Open **SQL Editor → New query**, paste the contents of `supabase-setup.sql`,
-   and click **Run**. This creates the `skills_check_sessions` table and locks it
-   down so the public site can only *add* results, never read them.
-3. Open **Project Settings → API** and copy two values:
-   - **Project URL**
-   - **anon public** key
-4. Paste both into `config.js`. (The anon key is designed to be public — it's safe
-   in a website because Row Level Security only allows inserts.)
-
-You'll read the collected results in Supabase under **Table Editor →
-skills_check_sessions**.
-
-### 2. Publish with GitHub Pages (hosts the site, free)
-
-1. Create a new GitHub repository and upload all the files in this folder
-   (keep them at the top level, so `index.html` is in the root).
-2. In the repo: **Settings → Pages**.
-3. Under **Build and deployment**, set **Source: Deploy from a branch**,
-   choose your branch (usually `main`) and folder `/root`, then **Save**.
-4. Wait a minute, then visit the URL GitHub gives you
-   (`https://your-username.github.io/your-repo/`).
-
-That's it. To update anything later, edit the file and push the change.
-
----
-
-## Testing with real families (the point of V1)
-
-Before wider release, test with a small group (the PTO Standards suggest a mix of
-home-educated, mainstream and SEND learners across different ages). Ask them:
-
-- Did your child understand what to do without help?
-- Was anything confusing, too easy, or too hard?
-- Did the report make sense and feel useful?
-- Did it feel calm and encouraging?
-
-Each completed check appears as one row in Supabase, including the answer chosen for
-every question — enough to spot any weak questions before you expand the bank.
-
----
-
-## Key decisions (and why)
-
-These follow "choose the simplest solution that satisfies the educational
-requirements":
-
-- **37 questions from a 360-question bank.** Originally 30, increased after the first
-  educational review found that Position & Direction and Statistics (1 question each)
-  gave too little evidence to fairly classify a whole strand. Quotas are now Number &
-  Place Value 8, Addition & Subtraction 6, Measurement 5, Multiplication & Division 4,
-  Fractions 4, Geometry 4, Position & Direction 3, Statistics 3 — totalling 37, still a
-  few minutes longer at most. Every strand now has at least 3 questions. Within each
-  strand the app picks *different skills* and a random variant of each, so no child
-  gets two questions on the exact same skill (bank checked: every strand has more
-  distinct skills than its quota) and repeat sittings differ.
-- **Gentle difficulty ramp.** After selection, questions are ordered easier-first
-  with a little randomness inside each difficulty band, so children start with a
-  confidence-builder (Part 20).
-- **Metadata: curriculum year, misconception category, estimated time.** Each
-  question also carries `curriculumYear` (Year 1 or Year 2, taken from the actual
-  DfE National Curriculum programme of study for each strand — not invented),
-  `misconceptionCategory` (one of 13 short tags, e.g. `place-value`,
-  `fraction-partitioning`, `time-reading`, used for diagnostic grouping) and
-  `estimatedSeconds` (a simple difficulty-based estimate, not tuned per question).
-  These ride inside the existing `responses` jsonb column when a result is saved —
-  **no database schema change was needed.**
-- **Two short context questions, not shown in the printed report.** After the
-  last maths question the child rates how the check felt (easy / OK / quite
-  difficult / very difficult); after the handover the parent rates how
-  independently their child worked (completely / a little help / a lot of help).
-  Both are stored with the result (`child_confidence`, `parent_independence`) for
-  interpreting the score, but are deliberately **not shown on the printed report**
-  — the report stays exactly as designed, and this keeps the child-facing question
-  simple and un-leading.
-- **Assessment duration is measured precisely.** `duration_seconds` covers only
-  the 30 maths questions (first question shown to last one answered) — it
-  deliberately excludes the two short survey screens, so it reflects genuine
-  time-on-task.
-- **One results table, JSON detail.** Every per-question answer is stored inside the
-  session row (`responses`), so nothing is lost and analytics is possible later —
-  without the complexity of extra tables for V1. Each row also records `percentage`,
-  a friendly `reference` (e.g. `PTO-2026-000123`), `assessment_name`,
-  `assessment_version` (the question-set version) and `status`, so different checks
-  and question versions stay distinguishable.
-- **Insert-only security.** The public site can add results but not read them,
-  which protects the emails you collect.
-- **No back button.** The Standards (Part 20) prefer capturing current thinking over
-  improved guessing, so children move forward through the check.
-- **Report leads with strengths**, uses gentle language, groups by curriculum strand,
-  gives a practical "try at home" tip per area, and is honest that a short check is an
-  early snapshot (Part 14).
-- **Area wording is deliberately non-absolute.** "Developing" strands read as "an
-  area worth exploring further together"; "practice" strands read as "additional
-  practice is likely to help build confidence" — never a flat "needs practice."
-  Any strand answered with 3 or fewer questions also gets an explicit caveat that
-  it's "an early signal to explore rather than a firm conclusion," since a strand
-  sampled by only a few questions genuinely doesn't support a strong claim.
-- **Option order is shuffled** per child so the answer isn't always in the same place.
-- **Child's first name** is collected (in addition to the required parent name/email)
-  purely to personalise the report, as the Standards ask.
-
-## Deliberately NOT in Version 1 (future work, once V1 is tested)
-
-Kept out to protect simplicity and reliability, as instructed. (Statistics and
-Position & Direction are now **included** in v1.0-rc1 — all eight KS1 strands are
-covered.)
-
-- Resume-after-refresh / autosave mid-check. The check is short; adding this brings
-  edge cases and maintenance. Worth revisiting if testing shows a need.
-- Automatic emailing of the report (parents can save/print it for now).
-- Adaptive difficulty, dashboards, logins, lesson recommendations, other
-  subjects/key stages.
-
----
-
-## Changing the questions
-
-**Small edits:** open `questions.js` and change the wording or options of any
-question directly — each is a plain object with the PTO metadata (ID, skill ID,
-strand, difficulty, type, misconception, explanation).
-
-**Bulk changes:** use the optional `tools/generate-questions.js` script with Node
-(`node tools/generate-questions.js questions.js`) to regenerate the whole bank from
-templates. This is only an authoring convenience — the website itself never runs it.
-
-**Curriculum balance** is set by `STRAND_QUOTA` near the top of the selection logic
-in `app.js` (it must total `ASSESSMENT_LENGTH`, currently 37). **Illustrations** use
-the built-in types: `dots`, `array`, `coins`, `shape` (circle, square, rectangle,
-triangle, pentagon, hexagon), `clock` (o'clock and half past), `fraction` (bar,
-tall-column, or pie/pizza), `bars`, `pictogram`, `tally`, `base10` (Dienes-style
-tens rods and ones cubes), `numberline`, `turns` (a quarter-turn reference circle)
-and `arrow` (a single directional arrow).
-
-## Illustrations (Version 1.1)
-
-194 of the 360 questions (54%) now carry an illustration, up from 103 (29%) in
-v1.0. Every addition follows one rule: **if a picture doesn't genuinely aid
-understanding of that specific question, it doesn't get one.** A few examples of
-questions left as text on purpose: comparing "a car" and "a shoe" by weight (crude
-SVG icons of a car and a shoe would look like decoration, not a real comparison);
-matching an object's name to a shape category (`GEO-REAL2D`/`GEO-3D` — needs real
-photos to be honest, not abstract SVG shapes); ordinal-position vocabulary
-(`POS-ORD` — the words themselves are the thing being tested).
-
-Two things worth knowing if you're reviewing illustration quality:
-
-- **The number line never labels the answer.** For "what is one more than 5?" the
-  line shows ticks and numbers either side, but the tick at the answer position is
-  left blank with just a "?" — otherwise the answer would be printed right on the
-  page. (Checked against all 23 number-line questions in the bank — zero leaks.)
-- **The quarter-turns diagram is a fixed reference, not the answer.** Every
-  `POS-TURN` question shows the same "this is what one quarter turn looks like"
-  image rather than shading in the number of quarters that happens to be correct
-  for that question — otherwise a child could just count shaded segments instead
-  of reasoning about turns.
-
-Nothing about the assessment engine, scoring, Supabase schema, quotas, or
-assessment length changed to support this — illustrations are purely a `q.illustration`
-field read by `renderIllustration()` in `app.js` and never touch the saved
-`responses` data.
-
-## Maths Tips (Version 1.4)
-
-Every question shows a small typed tip box below the answer choices — each
-tip now has a **type**, matching the wider PTO style used across lessons,
-worksheets and the home education book:
-
-| Type | Icon | Used for |
-|---|---|---|
-| Maths Tip | 💡 | Practical mathematical strategies |
-| Remember | 🧠 | Key knowledge to hold in mind |
-| Top Tip | ⭐ | Helpful problem-solving approaches |
-| Look Carefully | 👀 | Careful observation |
-| Learning Habit | 🌱 | Confidence, resilience, growth mindset |
-
-One tip is picked at random per question from a bank of **185 distinct
-tips** (`TIPS` near the top of `app.js`, each with `category`, `type`, and
-`text`) — 25 general tips (all `learningHabit`) plus 20 per curriculum
-strand, typed individually by what each one actually teaches (fact →
-`remember`, strategy → `mathsTip`, approach → `topTip`, observation →
-`lookCarefully`). Selection avoids an immediate repeat where the pool
-allows it. A simulated 37-question sitting showed 4–5 of the 5 types
-appearing per sitting with zero immediate repeats; across 500 simulated
-sittings (18,500 question-to-question transitions) the immediate-repeat
-rate was 0%.
-
-Every tip was checked to contain no numbers and no reference to any
-specific question, shape, or picture — this was verified automatically
-(zero tips contain a digit) and by checking a full sitting's tips against
-that question's correct answer text (zero matches).
-
-This is purely a content and presentation change: it reads `q.strand`,
-picks a tip object, and writes its icon/label/text into three existing
-elements (`#tip-icon`, `#tip-label`, `#tip-text`). The visual design
-(box, colours, spacing) is unchanged from v1.2 — only the label/icon are
-now dynamic instead of fixed to "💡 Maths Tip". Nothing in the assessment
-engine, scoring, question selection, reporting, illustrations, or Supabase
-was touched.
-
-## PTO Assessment Design System (Version 1.5)
-
-This release begins establishing a shared visual identity across future PTO
-assessments — see **`DESIGN_SYSTEM.md`** for the full specification (strand
-colours, KS1–KS4 progressive philosophy, illustration/tip/encouragement
-principles). What actually shipped in the live assessment this round:
-
-1. **Strand colour accent.** The Maths Tip box now shows a thin left-edge
-   stripe in the current question's strand colour (8 colours, one per
-   strand — see `STRAND_COLORS` in `app.js`). Colour is always paired with
-   the tip's icon and text, never the only signal.
-2. **Sparing encouragement.** A small rotating message ("Keep going.",
-   "Nearly there.", etc.) appears every 6th question — never on every
-   screen, and never on the final question. Verified: exactly 6 of 37
-   questions in a simulated sitting.
-3. **Emoji-capable illustrations, proven on two real questions.** The dot
-   illustration renderer now accepts an optional emoji glyph, and a new
-   `emojigroups` type shows two named groups side by side. Applied to the
-   "red apples and green apples" addition question (🍎🍏) and the "cakes
-   eaten" subtraction question (🍰) — the two questions in the bank where
-   the emoji genuinely matches the question's own wording.
-
-**A real bug caught during this work:** the first version of the
-`emojigroups` illustration set its `aria-label` to the total number of
-objects shown — which, for a "how many altogether?" question, is the
-correct answer. A screen reader would have spoken the answer aloud. Fixed
-to describe the groups by their given counts instead (already stated in
-the question text) and never the combined total; verified against all 5
-`emojigroups` questions in the bank with zero leaks.
-
-**Deliberately not done this round** (see `DESIGN_SYSTEM.md` for the
-reasoning on each): a full sweep replacing every dot illustration with
-themed emoji across all 360 questions (needs a content-matching review per
-question, not a mechanical change); illustrated character companions (no
-character artwork exists — faking it with primitives would look exactly
-like the "clip-art, mismatched styles" this system explicitly rejects); a
-deeper pass sharpening the ~185 Maths Tips to be more concept-specific
-per strand; KS2–KS4 or other-subject assessments (don't exist as products).
-
-## Illustration concreteness pass (Version 1.6)
-
-Reviewed the full 360-question bank against one rule: **concrete objects for
-real-world contexts, mathematical models for mathematical concepts.**
-
-**Finding:** almost none of the bank actually needed changing. Systematically
-checked every question's text for named real-world objects (cars, buses,
-apples, cakes, pencils, books, flowers) — only 2 existed (already fixed in
-v1.5: 🍎🍏 and 🍰). Every other illustrated question either says "counters" (a
-legitimate KS1 maths manipulative, correctly left as a mathematical model —
-not a decoration problem) or names no object at all (abstract number
-questions like "double 5"). Fractions, geometry, arrays, and statistics were
-already using the appropriate mathematical models (bars/pies, shapes,
-arrays, pictograms) and were left untouched.
-
-**The one real change:** `NPV-COUNT` ("How many counters can you see?" ×10)
-was the single closest match to the brief's own worked example (cars) — a
-foundational counting skill shown as plain purple dots. It now rotates
-through real KS1-friendly objects with matching emoji (toy cars 🚗, buses 🚌,
-apples 🍎, pencils ✏️, books 📚, flowers 🌸, footballs ⚽, sweets 🍬).
-
-**A real, pre-existing accessibility bug found and fixed during the review:**
-a systematic sweep of every illustrated question's `aria-label` against its
-correct answer (word-boundary matching, not naive substring, to avoid false
-positives) found that all 10 `NPV-COUNT` questions had an aria-label stating
-the exact dot count — which **is** the correct answer for "how many can you
-see?" A screen-reader user would have heard the answer spoken aloud. This
-predates this session; the systematic check required by this task is what
-caught it. Also found: `NPV-TENS`'s base-10 block illustration stated "`{n}`
-tens and `{n}` ones" as its label — safe for `TENMORE`/`TENLESS`/`BUILD`
-(restates the *given* number), but a real leak for `NPV-TENS` specifically,
-since that question asks "how many tens?" Both fixed with a per-question
-`ariaLabel` override (`svgDots`/`svgBase10` now accept one), verified with a
-full sweep across all 204 illustrated questions: **zero remaining leaks.**
-
-Only `app.js`, `questions.js`, and `tools/generate-questions.js` changed —
-`index.html` and `styles.css` are byte-identical to v1.5. The full regression
-suite (37 questions, correct quotas, 2,000 unique selections, encouragement
-frequency, report generation, Supabase row shape) passes unchanged.
-
----
-
-## Crash fix (Version 1.6.1)
-
-**Bug:** `renderQuestion()` crashed on Question 1 with `Cannot set properties
-of null (setting 'textContent')`.
-
-**Root cause:** `$(id)` (the app's `document.getElementById` shorthand) had
-no guard — if `index.html` didn't have every element `app.js` expected
-(e.g. an `index.html` from before v1.4/v1.5 added `tip-box`, `tip-icon`,
-`tip-label`, `encourage-text`, paired with a newer `app.js`), `$()` returned
-`null` and the very next line (`.textContent = ...`) threw and stopped the
-whole assessment.
-
-**Fix:** `$()` now returns a safe no-op placeholder instead of `null` when
-an element is missing, and logs a clear console warning
-(`[PTO] Expected element #… was not found…`) so the gap stays visible to a
-developer without breaking the page for a child mid-assessment. This is a
-general safeguard — it isn't specific to the tip/encouragement elements
-that triggered this particular report, and protects every `$()` call in
-the file the same way.
-
-**Verified with three tests, not just a code read:**
-1. The current `index.html` + `app.js` together — zero warnings, zero
-   errors, from Question 1 through a full 37-question sitting.
-2. The exact failure reproduced deliberately (an `index.html` with
-   `tip-box`/`tip-icon`/`tip-label`/`encourage-text` removed) against the
-   *old* unguarded `$()` — confirmed it would have thrown, matching the
-   bug report exactly.
-3. The same deliberately-broken HTML against the *new* guarded `$()` — no
-   crash, 4 clear warnings logged, assessment continues normally.
-
-If you're seeing this crash, the most likely cause is `index.html` being
-out of sync with `app.js` — re-deploying the `index.html` in this delivery
-resolves it. The defensive fix in `app.js` means this specific failure mode
-can't recur even if a future file gets out of sync again.
-
----
-
-## Toward the "Version 2.0" vision (v1.7 — a genuine first slice, not the whole thing)
-
-The v2.0 brief asked for every one of 360 questions to be individually
-reviewed by "an experienced KS1 teacher, curriculum designer, and children's
-illustrator." That's real, valuable, multi-session work — this release is a
-**verified first slice** of it, not a claim that the full review is done.
-Strand colours were explicitly kept unchanged (already correct, per your
-confirmation) — no code change needed there.
-
-**What shipped:**
-
-1. **Pictograms now show real themed icons, not plain purple circles** — a
-   genuine bug fix as much as a style improvement (a "pictogram" showing
-   dots wasn't actually a pictogram). `Apples`→🍎, `Cats`→🐱, `Buses`→🚌, and
-   critically **`Red`/`Blue`/`Green`→🔴🔵🟢**, directly matching the brief's
-   own pattern-question example. `Plums` uses a purple circle rather than a
-   fabricated "plum emoji" — an honest stand-in, not a claim to photorealism.
-2. **Scattered (non-grid) layout for real-object counting questions.** All
-   10 `NPV-COUNT` questions now place their objects with a deterministic
-   jitter instead of a tidy grid, so children genuinely count rather than
-   recognise a row shape — matching "children should genuinely count, not
-   recognise a line." Verified mathematically *and* against the actual
-   generated SVGs that no two objects can ever overlap (minimum pairwise
-   distance 54–58px against a 40px safety threshold).
-3. **Light micro-story characters** in the two word-problem questions —
-   Emily, Oliver, Sophie, and Ben (a boy/girl mix, as requested) now appear
-   as "Emily has 4 red apples..." rather than "There are 4 red apples...".
-   Implemented as **text only** — no drawn character art exists, and
-   inventing placeholder illustrations would risk exactly the
-   inconsistent, clip-art look the Design System explicitly rejects.
-4. **Illustrations are larger on desktop**, via a `min-width: 700px` media
-   query only — mobile is byte-for-byte unaffected below that width.
-
-**Verified, not asserted:** full aria-label leak sweep across all 204
-illustrated questions (0 leaks); scatter-overlap check against the actual
-generated coordinates for all 10 real questions (not just the formula in
-isolation); a full 37-question sitting rendered with 0 failures; report and
-Supabase row shape confirmed unchanged.
-
-**Deliberately not done this round, and why** (see also `DESIGN_SYSTEM.md`):
-
-- **Individual review of all 360 questions.** Only the questions with a
-  clear, concrete match to the brief (real-object counting, statistics
-  pictograms, the two word problems) were changed. The rest — abstract
-  number questions, "counters" sharing/halving questions, geometry, arrays,
-  fractions, measurement — were already using correct mathematical models
-  and weren't mechanically touched, consistent with "do not replace genuine
-  mathematical representations."
-- **Shapes embedded in real objects** (house, rocket, castle, robot) —
-  a real illustration-design task requiring new artwork, not a data change.
-- **Drawn character illustrations** — same reason; used as text instead.
-- **Pattern questions** (red/blue/green sequences) — these don't currently
-  exist in the question bank. The pictogram colour-icon work above is ready
-  for them, but adding new pattern *questions* is new content, not an
-  illustration pass, so it wasn't added without being asked for explicitly.
-
-**One recommendation for your consideration** (not implemented, per your
-instruction to flag rather than change): `Plums` could use a genuine fruit
-emoji if you're open to a close-but-imperfect match (e.g. 🍇 grapes) rather
-than a purple circle — a small trade-off between visual accuracy and
-literal correctness, worth a quick call rather than me guessing.
-
----
-
-## Continuing toward the illustrated-workbook feel (v1.8)
-
-A further verified slice, same honest scope as v1.7 — not a claim that all
-360 questions have now been reviewed.
-
-**What shipped:**
-
-1. **Arrays now show themed objects while keeping the row/column grid
-   intact** — `MD-GROUPS` ("How many eggs altogether?") shows 🥚 in rows,
-   `MD-ARRAY` ("How many oranges are in this array?") shows 🍊. The
-   *structure* (rows × columns) is the genuine mathematical model and is
-   completely unchanged — only the dot became a themed icon. Question text
-   was updated to match ("dots" → "eggs"/"oranges") so text and picture
-   never disagree.
-2. **`MEA-MOSTCOIN` ("which is the largest amount of money?") now has an
-   illustration** — previously text-only. Shows the actual coins named in
-   the answer options (already given as text, so nothing new is revealed).
-3. **Small-scene feel via scattered layout**, extended to three more
-   contexts: the apple/cake word problems, and money questions
-   (`MEA-MONEY`, `MEA-MOSTCOIN`) — coins now sit naturally rather than in a
-   straight row, echoing real coins spilled on a table.
-4. **10 Maths Tips sharpened** toward the "strategy for this thinking, not
-   generic encouragement" style from your own examples — e.g. "The hands
-   on a clock tell us different things" → "The short hand points to the
-   hour, and the long hand points to the minutes"; "Rows and columns can
-   help you count arrays" → "Equal rows can help you see multiplication
-   clearly." Bank re-verified: still exactly 185, all unique, zero digits.
-
-**Verified, not asserted:** full aria-label leak sweep across all 209
-illustrated questions (0 leaks, including the 5 newly-illustrated
-`MEA-MOSTCOIN` questions); every new scattered illustration checked against
-its actual generated coordinates; full 37-question sitting with 0 render
-failures and 0 missing tips; report and Supabase row shape unchanged.
-
-**Still deliberately not done** (same reasons as v1.7 — see `DESIGN_SYSTEM.md`
-and the note above): full individual review of all 360 questions; shapes
-embedded in real-object silhouettes; drawn character illustrations; a full
-pass over all 185 tips (10 of the weakest were sharpened this round as a
-representative sample, not an exhaustive rewrite).
-
----
-
-## Continuing the illustration pass (v1.9)
-
-**What shipped:**
-
-1. **The last four "counters" questions are now real objects.** `MD-SHARE`
-   ("Share sweets equally between children") uses 🍬, `MD-GROUP` ("groups of
-   toy cars") uses 🚗, `FRA-HALFQ` ("half of these stickers") uses ⭐,
-   `FRA-QUARTERQ` ("a quarter of these cookies") uses 🍪 — all scattered
-   rather than gridded, and all with question text updated to match (no
-   question anywhere in the bank still says "counters" — confirmed by a
-   full-text search). This closes out the "counters" family that was
-   deliberately left alone in v1.7 as a legitimate mathematical manipulative;
-   on reflection, sharing sweets between friends or splitting cookies is a
-   genuinely more concrete framing for 5–7 year olds than an abstract
-   "counter," so these were worth converting.
-2. **2 more Maths Tips sharpened** — the array tip and a money tip now tie
-   directly to real strategies already used elsewhere in the app (the money
-   tip, "add the largest coin first," is the same strategy already given as
-   a `teacherNote` on the money-counting question — the tip and the
-   question design now reinforce each other).
-
-**Verified, not asserted:** full aria-label leak sweep across all 209
-illustrated questions (0 leaks); confirmed zero remaining "counters"
-references anywhere in question text; tip bank re-checked (185, unique,
-zero digits); full 37-question sitting with 0 render failures, 0 missing
-tips; report and Supabase row shape unchanged.
-
-**Remaining scope**, unchanged from v1.8: full individual review of all 360
-questions, shapes-in-real-object silhouettes, drawn character illustrations,
-and a full pass over the remaining ~173 tips.
-
----
-
-Primary Tutor Online · KS1 Maths Skills Check · v1.9
+# PTO Asset Library (Stage 1)
+
+This is the permanent asset architecture for Primary Tutor Online — built
+so that future artwork (commissioned, purchased, AI-generated, or
+hand-drawn) can replace placeholders **without redesigning the
+assessment**, per the approved implementation plan (see
+`../IMPLEMENTATION_PLAN.md`).
+
+**Not yet wired into the live app.** Nothing in `index.html`, `app.js`, or
+`questions.js` references anything in this folder yet — that's Stage 4
+(applying to a small test set). This stage is the plumbing, proven to
+work in isolation.
+
+## Structure
+
+```
+assets/
+  characters/manifest.js   — Emma, Oliver, Sophie, Ben; poses & colours
+  objects/manifest.js      — fruit, vehicles, toys, animals, school items...
+  scenes/manifest.js       — classroom, farm, beach, park...
+  models/manifest.js       — documents which mathematical models are
+                              code-generated in app.js today (these are
+                              NOT swappable image assets — see below)
+  hints/manifest.js        — skeleton per-skill hint library (a handful
+                              of real examples; full library is Stage 3)
+  resolve.js               — the resolver: given a stable asset ID,
+                              returns either a placeholder or real
+                              artwork, without the caller needing to know
+                              which
+```
+
+## How a question will eventually reference an asset
+
+Not yet implemented (Stage 4), but the intended shape, per the approved
+plan's own examples:
+
+```js
+{
+  text: "How many apples can Emma see?",
+  character: "char_emma_point",
+  objects: [{ id: "obj_apple_red", count: 4 }],
+  scene: "scene_kitchen"
+}
+```
+
+— rather than the current `illustration: {type:"dots", emoji:"🍎", ...}`
+embedded directly in the question. That data-model shift is real and
+deliberate, and is its own Stage 4 task, not done here.
+
+## How to add real artwork later (the whole point of this system)
+
+1. Add the image file under the relevant `assets/<type>/files/` folder
+   (create it — it doesn't exist yet, since there's no real art yet).
+2. In that asset's manifest entry, change:
+   ```js
+   status: "placeholder"  →  status: "final"
+   file: null             →  file: "characters/files/emma_point_v1.svg"
+   ```
+3. Nothing else changes — no question data, no rendering code. The
+   resolver already handles both states identically from the caller's
+   point of view. This is proven, not just claimed: see
+   `/home/claude/test_asset_library.js`, "THE KEY TEST," which simulates
+   exactly this swap and confirms the resolver returns the real asset.
+
+## Placeholder behaviour today
+
+- **Characters**: a simple coloured initial badge (e.g. a pink circle
+  with "E" for Emma) — deliberately plain so it's never mistaken for
+  finished art.
+- **Objects**: fall back to the emoji already live in the assessment
+  today (already shipped, already leak-verified) — a genuinely reasonable
+  placeholder tier, not a step backward.
+- **Scenes**: render **nothing**. No scene exists today, and inventing a
+  fake one would be worse than no background — scenes are explicitly
+  optional per the reference pack.
+- **Mathematical models**: not applicable — these stay code-generated
+  permanently (see `models/manifest.js` for why), so there's no
+  placeholder/final distinction for this category.
+
+## Known gaps surfaced by building this manifest
+
+Cross-checking `models/manifest.js` against Image Pack 5's 15 model
+categories found four with no renderer in the live app yet: **ten frames,
+part-whole/bond diagrams, bead strings, and true bar models** (the
+existing `svgBars` renders comparative length bars, not part/part/whole
+bar models), plus **3D shapes** (the existing `svgShape` is 2D-only).
+Worth knowing before Stage 6's strand-by-strand rollout reaches
+Measurement/Geometry, where these would likely be wanted.
+
+## Character colours (confirmed)
+
+Emma = pink `#E91E63` · Oliver = green `#43A047` · Sophie = purple
+`#652DA0` · Ben = blue `#2196F3`. Character colour and curriculum strand
+colour are separate systems by design — Sophie stays purple even on
+Geometry questions (also purple); any visual clash is resolved later by
+layout/spacing, never by recolouring either system.
